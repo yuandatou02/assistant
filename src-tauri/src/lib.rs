@@ -1,5 +1,10 @@
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub fn run() {
+mod lcu;
+mod shaco;
+
+use crate::lcu::listen_for_client_start;
+
+#[tokio::main]
+pub async fn run() {
     tauri::Builder::default()
         .setup(|app| {
             if cfg!(debug_assertions) {
@@ -12,6 +17,7 @@ pub fn run() {
             Ok(())
         })
         .plugin(tauri_plugin_process::init())
+        .invoke_handler(tauri::generate_handler![listen_for_client_start])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
