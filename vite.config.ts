@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import tailwindcss from "@tailwindcss/vite";
+import path from "node:path";
 
 const host = process.env.TAURI_DEV_HOST;
 
@@ -9,6 +10,11 @@ export default defineConfig({
   plugins: [vue(), tailwindcss()],
   // 防止 Vite 清除 Rust 显示的错误
   clearScreen: false,
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
   server: {
     port: 8080,
     // Tauri 工作于固定端口，如果端口不可用则报错
