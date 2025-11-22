@@ -3,10 +3,18 @@ use std::time::{Duration, Instant};
 use crate::shaco::{rest::RESTClient, utils::process_info::get_client_info};
 use log::error;
 use once_cell::sync::OnceCell;
+use serde_json::Value;
 use tauri::{AppHandle, Emitter};
 
 // 定义全局的 REST 客户端
 static REST_CLIENT: OnceCell<RESTClient> = OnceCell::new();
+
+// 获取 REST_CLIENT 的函数
+fn get_client() -> Result<&'static RESTClient, String> {
+    REST_CLIENT
+        .get()
+        .ok_or_else(|| "REST_CLIENT未初始化".to_string())
+}
 
 #[tauri::command]
 pub fn listen_for_client_start(app: AppHandle) {
@@ -35,4 +43,13 @@ pub fn listen_for_client_start(app: AppHandle) {
             }
         }
     });
+}
+
+#[tauri::command]
+pub async fn invoke_lcu(method: &str, uri: &str, _body: &str) -> Result<Value, Value> {
+    let client = get_client()?;
+    match method.to_lowercase().as_str() {
+        "get" => client.get(uri).await.map_err(|_| Value::Null),
+        _ => Ok(Value::Null),
+    }
 }

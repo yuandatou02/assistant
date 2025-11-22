@@ -1,6 +1,7 @@
 use std::time::Duration;
 
 use reqwest::{Certificate, header};
+use serde_json::Value;
 
 pub struct RESTClient {
     port: String,
@@ -11,26 +12,42 @@ type Error = Box<dyn std::error::Error>;
 
 impl RESTClient {
     /// 创建一个新的客户端实例
-    /// 
+    ///
     /// # 参数
-    /// 
+    ///
     /// * `auth_token` - 用于身份验证的令牌字符串
     /// * `port` - 服务器端口号字符串
-    /// 
+    ///
     /// # 返回值
-    /// 
+    ///
     /// 返回一个 `Result`，其中：
     /// - `Ok(Self)` 包含新创建的客户端实例
     /// - `Err(Error)` 包含创建过程中可能出现的错误
-    /// 
+    ///
     /// # 示例
-    /// 
+    ///
     pub fn new(auth_token: String, port: String) -> Result<Self, Error> {
         let request_client = build_request_client(Some(auth_token));
         Ok(Self {
             port,
             request_client,
         })
+    }
+
+    /// 发送GET请求到指定端点
+    /// # 参数
+    /// `endpoint` - 要请求的API端点路径
+    /// # 返回值
+    /// * `Result<Value, reqwest::Error>` - 返回JSON值的Result，如果解析失败则返回Value::Null
+    pub async fn get(&self, endpoint: &str) -> Result<Value, reqwest::Error> {
+        self.request_client
+            .get(format!("https://127.0.0.1:{}{}", self.port, endpoint))
+            .send()
+            .await?
+            .error_for_status()?
+            .json()
+            .await
+            .or_else(|_| Ok(Value::Null))
     }
 }
 
