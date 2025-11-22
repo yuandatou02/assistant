@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
-
+import packageInfo from "./package.json";
 const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
@@ -10,6 +10,9 @@ export default defineConfig({
   plugins: [vue(), tailwindcss()],
   // 防止 Vite 清除 Rust 显示的错误
   clearScreen: false,
+  define: {
+    __APP_VERSION__: JSON.stringify(packageInfo.version),
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
