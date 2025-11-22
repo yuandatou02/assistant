@@ -17,17 +17,36 @@
                     <removeCircleOutline />
                 </n-icon>
             </n-button>
+            <!-- 设置图标 -->
+            <n-button :focusable="false" text circle @click="isShowDrawer = true">
+                <n-icon size="20">
+                    <SettingsOutline />
+                </n-icon>
+            </n-button>
+            <!-- 推出图标 -->
+            <n-popconfirm @positive-click="handleClose">
+                <template #trigger>
+                    <n-button text circle>
+                        <n-icon size="20">
+                            <CloseCircleOutline />
+                        </n-icon>
+                    </n-button>
+                </template>
+                是否退出英雄联盟助手？
+            </n-popconfirm>
         </div>
     </header>
 </template>
 
 <script lang="ts" setup>
 import { NIcon, NButton, NPopconfirm, NDrawer } from "naive-ui";
-import { BulbOutline, RemoveCircleOutline } from "@vicons/ionicons5";
+import { BulbOutline, RemoveCircleOutline, SettingsOutline, CloseCircleOutline } from "@vicons/ionicons5";
 import { ref } from "vue";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { exit } from "@tauri-apps/plugin-process";
 
 const isShowNoticeIcon = ref(false);
+const isShowDrawer = ref(false);
 
 /**
  * 最小化当前窗口的处理函数
@@ -35,5 +54,13 @@ const isShowNoticeIcon = ref(false);
 const handleMinimize = async () => {
     // 定义异步函数 handleMinize
     await getCurrentWindow().minimize();
+};
+
+/**
+ * 关闭处理函数
+ * 该函数用于执行关闭操作，并异步退出程序
+ */
+const handleClose = async () => {
+    await exit();
 };
 </script>

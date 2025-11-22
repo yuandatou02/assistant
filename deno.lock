@@ -3,6 +3,7 @@
   "specifiers": {
     "npm:@tailwindcss/vite@^4.1.17": "4.1.17_vite@7.2.2__@types+node@24.10.1__picomatch@4.0.3_@types+node@24.10.1",
     "npm:@tauri-apps/api@^2.9.0": "2.9.0",
+    "npm:@tauri-apps/plugin-process@^2.3.1": "2.3.1",
     "npm:@types/node@^24.10.1": "24.10.1",
     "npm:@vicons/ionicons5@0.13": "0.13.0",
     "npm:@vitejs/plugin-vue@^6.0.1": "6.0.2_vite@7.2.2__@types+node@24.10.1__picomatch@4.0.3_vue@3.5.24__typescript@5.9.3_@types+node@24.10.1_typescript@5.9.3",
@@ -527,6 +528,12 @@
     },
     "@tauri-apps/api@2.9.0": {
       "integrity": "sha512-qD5tMjh7utwBk9/5PrTA/aGr3i5QaJ/Mlt7p8NilQ45WgbifUNPyKWsA63iQ8YfQq6R8ajMapU+/Q8nMcPRLNw=="
+    },
+    "@tauri-apps/plugin-process@2.3.1": {
+      "integrity": "sha512-nCa4fGVaDL/B9ai03VyPOjfAHRHSBz5v6F/ObsB73r/dA3MHHhZtldaDMIc0V/pnUw9ehzr2iEG+XkSEyC0JJA==",
+      "dependencies": [
+        "@tauri-apps/api"
+      ]
     },
     "@tybys/wasm-util@0.10.1": {
       "integrity": "sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==",
@@ -1106,6 +1113,7 @@
       "dependencies": [
         "npm:@tailwindcss/vite@^4.1.17",
         "npm:@tauri-apps/api@^2.9.0",
+        "npm:@tauri-apps/plugin-process@^2.3.1",
         "npm:@types/node@^24.10.1",
         "npm:@vicons/ionicons5@0.13",
         "npm:@vitejs/plugin-vue@^6.0.1",
