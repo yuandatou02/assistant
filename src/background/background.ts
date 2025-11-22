@@ -18,7 +18,7 @@ class Background {
   // 初始化监听消息
   private initializeListeners() {
     invoke("listen_for_client_start").then(() => {
-      listen<string>("client_start", (event) =>
+      listen<string>("client_status", (event) =>
         this.handleClientStatus(event.payload)
       );
     });

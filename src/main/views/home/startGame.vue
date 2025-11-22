@@ -38,6 +38,7 @@
 </template>
 
 <script lang="ts" setup>
+import { invoke } from "@tauri-apps/api/core";
 import { NCard, NSpace, NTag, useMessage, NButton, NTable } from "naive-ui";
 
 const message = useMessage();
@@ -53,8 +54,20 @@ const tableData = [
     ["国服 / 韩服 英雄数据", "✅", "✅"],
 ];
 
-const startGame = () => {
+const startGame = async () => {
+    try {
+        const path = localStorage.getItem('clientPath');
 
+        if (path !== null) {
+            invoke('start_game', { path });
+            message.loading('英雄联盟客户端启动中...');
+        } else {
+            message.info('路径不存在，首次启动请先打开客户端', { duration: 4000 });
+        }
+    } catch (e) {
+        console.error(e);
+        message.error('启动失败!');
+    }
 };
 </script>
 

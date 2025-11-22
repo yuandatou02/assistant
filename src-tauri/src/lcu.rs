@@ -53,3 +53,11 @@ pub async fn invoke_lcu(method: &str, uri: &str, _body: &str) -> Result<Value, V
         _ => Ok(Value::Null),
     }
 }
+
+#[tauri::command]
+pub fn start_game(path: &str) {
+    std::process::Command::new(&path)
+        .spawn()
+        .map_err(|e| e.to_string())
+        .unwrap();
+}
