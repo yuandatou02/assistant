@@ -11,6 +11,7 @@
     "core:window:allow-start-dragging",
     "core:window:allow-minimize",
     "core:webview:allow-create-webview-window",
-    "process:allow-exit"
+    "process:allow-exit",
+    "process:allow-restart"
   ]
 }
