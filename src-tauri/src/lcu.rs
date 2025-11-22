@@ -61,3 +61,8 @@ pub fn start_game(path: &str) {
         .map_err(|e| e.to_string())
         .unwrap();
 }
+
+#[tauri::command]
+pub fn is_lol_client() -> bool {
+    get_client_info().is_ok()
+}
