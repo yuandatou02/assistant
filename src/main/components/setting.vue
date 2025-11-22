@@ -105,11 +105,15 @@
                 </div>
             </n-list-item>
         </n-list>
+        <n-modal v-model:show="showModal" class="m-2! max-w-[334px]!">
+            <sponsor :is-completed="false" />
+        </n-modal>
     </n-drawer-content>
 </template>
 
 <script lang="ts" setup>
 import { relaunch } from "@tauri-apps/plugin-process";
+import sponsor from "./sponsor.vue";
 import { NDrawerContent, NModal, NTag, NButton, NSelect, NSwitch, NSlider, NRadio, NList, NListItem, useDialog } from "naive-ui";
 import { ref } from "vue";
 import type { ConfigSettingTypes } from "@/background/types";
