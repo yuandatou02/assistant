@@ -1,5 +1,5 @@
 <template>
-    <div class="mainContent" v-if="show"></div>
+    <div class="mainContent" v-if="summonerData.summonerInfo"></div>
     <div class="mainContent" v-else>
         <startGame />
     </div>
@@ -20,16 +20,21 @@ import {
     NEllipsis, NModal,
 } from "naive-ui";
 import startGame from "./startGame.vue";
-import { onMounted, ref } from "vue";
+import { onMounted, reactive } from "vue";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
+import type { SummonerData } from "@/lcu/types/SummonerTypes";
 
-const show = ref(false);
+const summonerData = reactive<SummonerData>({
+    summonerInfo: null,
+    rankList: null,
+    champLevel: null,
+});
 
 onMounted(() => {
     invoke<boolean>("is_lol_client").then((val: boolean) => {
         if (val) {
-            show.value = true;
+            initData();
         } else {
             onClientLaunch();
         }
@@ -41,7 +46,7 @@ const onClientLaunch = async () => {
         let timer = 0;
         const interval = setInterval(async () => {
             timer++;
-            show.value = true;
+            initData();
             if (timer === 15) {
                 clearInterval(interval);
                 closeMessageOn();
@@ -49,5 +54,9 @@ const onClientLaunch = async () => {
         }, 1000);
     });
 };
+
+const initData = async () => {
+
+}
 
 </script>
