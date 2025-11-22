@@ -4,6 +4,7 @@
     "npm:@tailwindcss/vite@^4.1.17": "4.1.17_vite@7.2.2__@types+node@24.10.1__picomatch@4.0.3_@types+node@24.10.1",
     "npm:@tauri-apps/api@^2.9.0": "2.9.0",
     "npm:@types/node@^24.10.1": "24.10.1",
+    "npm:@vicons/ionicons5@0.13": "0.13.0",
     "npm:@vitejs/plugin-vue@^6.0.1": "6.0.2_vite@7.2.2__@types+node@24.10.1__picomatch@4.0.3_vue@3.5.24__typescript@5.9.3_@types+node@24.10.1_typescript@5.9.3",
     "npm:@vue/tsconfig@~0.8.1": "0.8.1_typescript@5.9.3_vue@3.5.24__typescript@5.9.3",
     "npm:naive-ui@^2.43.2": "2.43.2_vue@3.5.24__typescript@5.9.3_css-render@0.15.14_date-fns@4.1.0_typescript@5.9.3",
@@ -554,6 +555,9 @@
         "undici-types"
       ]
     },
+    "@vicons/ionicons5@0.13.0": {
+      "integrity": "sha512-zvZKBPjEXKN7AXNo2Na2uy+nvuv6SP4KAMQxpKL2vfHMj0fSvuw7JZcOPCjQC3e7ayssKnaoFVAhbYcW6v41qQ=="
+    },
     "@vitejs/plugin-vue@6.0.2_vite@7.2.2__@types+node@24.10.1__picomatch@4.0.3_vue@3.5.24__typescript@5.9.3_@types+node@24.10.1_typescript@5.9.3": {
       "integrity": "sha512-iHmwV3QcVGGvSC1BG5bZ4z6iwa1SOpAPWmnjOErd4Ske+lZua5K9TtAVdx0gMBClJ28DViCbSmZitjWZsWO3LA==",
       "dependencies": [
@@ -1103,6 +1107,7 @@
         "npm:@tailwindcss/vite@^4.1.17",
         "npm:@tauri-apps/api@^2.9.0",
         "npm:@types/node@^24.10.1",
+        "npm:@vicons/ionicons5@0.13",
         "npm:@vitejs/plugin-vue@^6.0.1",
         "npm:@vue/tsconfig@~0.8.1",
         "npm:naive-ui@^2.43.2",
