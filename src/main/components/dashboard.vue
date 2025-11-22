@@ -36,10 +36,15 @@
             </n-popconfirm>
         </div>
     </header>
+    <!-- 设置抽屉 -->
+    <n-drawer v-model:show="isShowDrawer" class=" rounded-t-lg!" :placement="'bottom'" :auto-focus="false" height="544">
+        <setting />
+    </n-drawer>
 </template>
 
 <script lang="ts" setup>
 import { NIcon, NButton, NPopconfirm, NDrawer } from "naive-ui";
+import setting from "./setting.vue";
 import { BulbOutline, RemoveCircleOutline, SettingsOutline, CloseCircleOutline } from "@vicons/ionicons5";
 import { ref } from "vue";
 import { getCurrentWindow } from "@tauri-apps/api/window";
