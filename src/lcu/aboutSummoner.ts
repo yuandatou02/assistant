@@ -1,5 +1,7 @@
+import { champDict } from "@/resources/champList";
 import { invokeLcu } from ".";
 import type {
+  ChampionMastery,
   HonorInfo,
   LcuSummonerInfo,
   RankedStats,
@@ -47,11 +49,18 @@ export const querySummonerInfo = async (
   };
 };
 
+/**
+ * 查询玩家排名点数的异步函数
+ * @param puuid - 玩家的唯一标识符，可选参数
+ * @returns 返回一个Promise，解析为包含三个排名信息的字符串数组
+ */
 export const queryRankPoint = async (puuid?: string): Promise<string[]> => {
   try {
+    // 根据是否有puuid参数决定不同的API端点
     const endpoint = puuid
       ? `/lol-ranked/v1/ranked-stats/${puuid}`
       : "/lol-ranked/v1/current-ranked-stats";
+    // 调用API获取排名统计数据
     const point = await invokeLcu<RankedStats>("get", endpoint);
     const rankPoint = point?.queues;
     // 如果 rankPoint 无效，返回默认值
@@ -81,19 +90,59 @@ export const queryRankPoint = async (puuid?: string): Promise<string[]> => {
 
     return [RANKED_SOLO, RANKED_FLEX_SR, RANKED_TFT];
   } catch (error) {
+    // 发生错误时返回默认值
     return ["未定级", "未定级", "未定级"];
   }
 };
 
+/**
+ * 查询召唤师荣誉等级的异步函数
+ * @returns {Promise<string>} 返回包含荣誉等级和里程的字符串，如果无法获取则返回"未知"
+ */
 export const querySummonerHonorLevel = async (): Promise<string> => {
+  // 调用LCU接口获取召唤师荣誉信息
   const summonerHonor = await invokeLcu<HonorInfo>(
-    "get",
-    "/lol-honor-v2/v1/profile"
+    "get", // HTTP GET请求方法
+    "/lol-honor-v2/v1/profile" // LCU API端点路径
   );
+  // 检查荣誉等级是否存在，如果不存在则返回"未知"
   if (summonerHonor?.honorLevel === undefined) return "未知";
+  // 返回格式化后的荣誉等级和里程信息
   return (
     "荣誉等级" + summonerHonor?.honorLevel + " 里程" + summonerHonor?.checkpoint
   );
+};
+
+// 查询召唤师绝活英雄数据信息
+export const queryMasteryChampList = async (summonerPuuid?: string) => {
+  if (summonerPuuid === "") return [];
+
+  const endpoint = summonerPuuid
+    ? `/lol-champion-mastery/v1/${summonerPuuid}/champion-mastery`
+    : "/lol-champion-mastery/v1/local-player/champion-mastery";
+  const summonerSuperChampData = await invokeLcu<ChampionMastery[]>(
+    "get",
+    endpoint
+  );
+
+  if (summonerSuperChampData === null) {
+    return [];
+  }
+  return summonerSuperChampData
+    .slice(0, 20)
+    .reduce((res: string[][], item: ChampionMastery) => {
+      return res.concat([
+        [
+          `https://game.gtimg.cn/images/lol/act/img/champion/${
+            champDict[String(item.championId)]?.alias
+          }.png`,
+          `${champDict[String(item.championId)]?.label}•${
+            champDict[String(item.championId)]?.title
+          }`,
+          `英雄等级 ${item.championLevel} / 熟练度 ${item.championPoints}`,
+        ],
+      ]);
+    }, []);
 };
 
 export const getCurrentSummonerAllInfo = async () => {
@@ -101,10 +150,11 @@ export const getCurrentSummonerAllInfo = async () => {
 
   if (summonerInfo === null) return null;
 
-  const [rankList, honorLevel] = await Promise.all([
+  const [rankList, honorLevel, champLevel] = await Promise.all([
     queryRankPoint(),
     querySummonerHonorLevel(),
+    queryMasteryChampList(),
   ]);
   rankList.push(honorLevel);
-  return { summonerInfo, rankList };
+  return { summonerInfo, rankList, champLevel };
 };

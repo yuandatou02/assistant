@@ -58,8 +58,6 @@ export interface SummonerData {
   champLevel: any[][] | null; // 英雄等级信息，存储二维数组，元素类型为any，可能为null
 }
 
-
-
 /**
  * 整个段位数据结构的根接口
  */
@@ -166,7 +164,6 @@ export interface Season {
   nextSeasonStart: number;
 }
 
-
 /**
  * 荣誉系统（Honor）完整信息
  */
@@ -196,4 +193,60 @@ export interface HonorRedemption {
 
   /** 领取该奖励所需的总荣誉进度值 */
   required: number;
+}
+
+/**
+ * 下个赛季里程碑信息
+ */
+interface NextSeasonMilestone {
+  /** 是否获得额外奖励 */
+  bonus: boolean;
+  /** 各等级所需次数映射表 */
+  requireGradeCounts: {
+    additionalProp1: number;
+    additionalProp2: number;
+    additionalProp3: number;
+  };
+  /** 奖励配置 */
+  rewardConfig: {
+    /** 最大奖励值 */
+    maximumReward: number;
+    /** 奖励内容描述 */
+    rewardValue: string;
+  };
+  /** 奖励代币数量 */
+  rewardMarks: number;
+}
+
+/**
+ * 英雄熟练度（ChampionMastery）数据
+ * 对应 Riot Games API 中单名英雄的熟练度信息
+ */
+export interface ChampionMastery {
+  /** 英雄 ID */
+  championId: number;
+  /** 熟练度等级（1~7） */
+  championLevel: number;
+  /** 当前熟练度点数 */
+  championPoints: number;
+  /** 距离当前等级已获得的点数 */
+  championPointsSinceLastLevel: number;
+  /** 距离下一等级还需的点数（0 表示已满级） */
+  championPointsUntilNextLevel: number;
+  /** 当前赛季里程碑等级 */
+  championSeasonMilestone: number;
+  /** 最高评价等级（如 "S+", "A" 等） */
+  highestGrade: string;
+  /** 最后游玩时间（Unix 毫秒时间戳） */
+  lastPlayTime: number;
+  /** 升到下一级所需代币数 */
+  markRequiredForNextLevel: number;
+  /** 已获得的里程碑评价列表 */
+  milestoneGrades: string[];
+  /** 下个赛季里程碑信息 */
+  nextSeasonMilestone: NextSeasonMilestone;
+  /** 玩家全局唯一标识（PUUID） */
+  puuid: string;
+  /** 已获得的熟练度代币数量 */
+  tokensEarned: number;
 }
