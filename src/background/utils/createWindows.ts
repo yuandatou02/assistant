@@ -33,3 +33,20 @@ export const createMainWindow = () => {
     webview.show();
   });
 };
+
+export const createQueryMatchWindow = () => {
+  const webview = new WebviewWindow("queryMatchWindow", {
+    title: "我的战绩",
+    url: "src/queryMatch/index.html",
+    width: 1174,
+    height: 668,
+    resizable: false,
+    decorations: false,
+    center: true,
+    visible: false,
+    transparent: true,
+  });
+  webview.once("tauri://webview-created", async function () {
+    webview.show();
+  });
+};

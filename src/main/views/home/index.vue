@@ -16,7 +16,8 @@
                             </n-ellipsis>
                         </n-tag>
                         <!-- 我的战绩按钮 -->
-                        <n-button class="px-2!" :bordered="false" type="success" size="small" round>
+                        <n-button class="px-2!" :bordered="false" type="success" size="small" round
+                            @click.prevent="openWin">
                             我的战绩
                         </n-button>
                     </div>
@@ -82,7 +83,7 @@ import {
     NList,
     NListItem,
     NButton,
-    NEllipsis, NModal,
+    NEllipsis,
 } from "naive-ui";
 import startGame from "./startGame.vue";
 import { onMounted, reactive } from "vue";
@@ -91,6 +92,7 @@ import { listen } from "@tauri-apps/api/event";
 import type { SummonerData } from "@/lcu/types/SummonerTypes";
 import { getCurrentSummonerAllInfo } from "@/lcu/aboutSummoner";
 import summonerMasteryChamp from "@/main/components/summonerMasteryChamp.vue";
+import { createQueryMatchWindow } from "@/background/utils/createWindows";
 
 const summonerData = reactive<SummonerData>({
     summonerInfo: null,
@@ -135,6 +137,7 @@ const initData = async () => {
     summonerData.champLevel = summonerInfo.champLevel;
     return true;
 };
-console.log("summonerData:", summonerData);
-
+const openWin = () => {
+    createQueryMatchWindow();
+};
 </script>
