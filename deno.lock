@@ -9,6 +9,7 @@
     "npm:@vitejs/plugin-vue@^6.0.1": "6.0.2_vite@7.2.2__@types+node@24.10.1__picomatch@4.0.3_vue@3.5.24__typescript@5.9.3_@types+node@24.10.1_typescript@5.9.3",
     "npm:@vue/tsconfig@~0.8.1": "0.8.1_typescript@5.9.3_vue@3.5.24__typescript@5.9.3",
     "npm:naive-ui@^2.43.2": "2.43.2_vue@3.5.24__typescript@5.9.3_css-render@0.15.14_date-fns@4.1.0_typescript@5.9.3",
+    "npm:pinia@^3.0.4": "3.0.4_typescript@5.9.3_vue@3.5.24__typescript@5.9.3",
     "npm:rolldown-vite@7.2.5": "7.2.5_@types+node@24.10.1_picomatch@4.0.3",
     "npm:tailwindcss@^4.1.17": "4.1.17",
     "npm:typescript@~5.9.3": "5.9.3",
@@ -874,11 +875,17 @@
     "@vue/devtools-api@6.6.4": {
       "integrity": "sha512-sGhTPMuXqZ1rVOk32RylztWkfXTRhuS7vgAKv0zjqk8gbsHkJ7xfFf+jbySxt7tWObEJwyKaHMikV/WGDiQm8g=="
     },
+    "@vue/devtools-api@7.7.9": {
+      "integrity": "sha512-kIE8wvwlcZ6TJTbNeU2HQNtaxLx3a84aotTITUuL/4bzfPxzajGBOoqjMhwZJ8L9qFYDU/lAYMEEm11dnZOD6g==",
+      "dependencies": [
+        "@vue/devtools-kit@7.7.9"
+      ]
+    },
     "@vue/devtools-core@8.0.5_vue@3.5.24__typescript@5.9.3_vite@7.2.2__@types+node@24.10.1__picomatch@4.0.3_typescript@5.9.3_@types+node@24.10.1": {
       "integrity": "sha512-dpCw8nl0GDBuiL9SaY0mtDxoGIEmU38w+TQiYEPOLhW03VDC0lfNMYXS/qhl4I0YlysGp04NLY4UNn6xgD0VIQ==",
       "dependencies": [
-        "@vue/devtools-kit",
-        "@vue/devtools-shared",
+        "@vue/devtools-kit@8.0.5",
+        "@vue/devtools-shared@8.0.5",
         "mitt",
         "nanoid@5.1.6",
         "pathe",
@@ -886,16 +893,34 @@
         "vue"
       ]
     },
-    "@vue/devtools-kit@8.0.5": {
-      "integrity": "sha512-q2VV6x1U3KJMTQPUlRMyWEKVbcHuxhqJdSr6Jtjz5uAThAIrfJ6WVZdGZm5cuO63ZnSUz0RCsVwiUUb0mDV0Yg==",
+    "@vue/devtools-kit@7.7.9": {
+      "integrity": "sha512-PyQ6odHSgiDVd4hnTP+aDk2X4gl2HmLDfiyEnn3/oV+ckFDuswRs4IbBT7vacMuGdwY/XemxBoh302ctbsptuA==",
       "dependencies": [
-        "@vue/devtools-shared",
+        "@vue/devtools-shared@7.7.9",
         "birpc",
         "hookable",
         "mitt",
-        "perfect-debounce",
+        "perfect-debounce@1.0.0",
         "speakingurl",
         "superjson"
+      ]
+    },
+    "@vue/devtools-kit@8.0.5": {
+      "integrity": "sha512-q2VV6x1U3KJMTQPUlRMyWEKVbcHuxhqJdSr6Jtjz5uAThAIrfJ6WVZdGZm5cuO63ZnSUz0RCsVwiUUb0mDV0Yg==",
+      "dependencies": [
+        "@vue/devtools-shared@8.0.5",
+        "birpc",
+        "hookable",
+        "mitt",
+        "perfect-debounce@2.0.0",
+        "speakingurl",
+        "superjson"
+      ]
+    },
+    "@vue/devtools-shared@7.7.9": {
+      "integrity": "sha512-iWAb0v2WYf0QWmxCGy0seZNDPdO3Sp5+u78ORnyeonS6MT4PC7VPrryX2BpMJrwlDeaZ6BD4vP4XKjK0SZqaeA==",
+      "dependencies": [
+        "rfdc"
       ]
     },
     "@vue/devtools-shared@8.0.5": {
@@ -1333,6 +1358,9 @@
     "pathe@2.0.3": {
       "integrity": "sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w=="
     },
+    "perfect-debounce@1.0.0": {
+      "integrity": "sha512-xCy9V055GLEqoFaHoC1SoLIaLmWctgCUaBaWxDZ7/Zx4CTyX7cJQLJOok/orfjZAh9kEYpjJa4d0KcJmCbctZA=="
+    },
     "perfect-debounce@2.0.0": {
       "integrity": "sha512-fkEH/OBiKrqqI/yIgjR92lMfs2K8105zt/VT6+7eTjNwisrsh47CeIED9z58zI7DfKdH3uHAn25ziRZn3kgAow=="
     },
@@ -1341,6 +1369,17 @@
     },
     "picomatch@4.0.3": {
       "integrity": "sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q=="
+    },
+    "pinia@3.0.4_typescript@5.9.3_vue@3.5.24__typescript@5.9.3": {
+      "integrity": "sha512-l7pqLUFTI/+ESXn6k3nu30ZIzW5E2WZF/LaHJEpoq6ElcLD+wduZoB2kBN19du6K/4FDpPMazY2wJr+IndBtQw==",
+      "dependencies": [
+        "@vue/devtools-api@7.7.9",
+        "typescript",
+        "vue"
+      ],
+      "optionalPeers": [
+        "typescript"
+      ]
     },
     "postcss@8.5.6": {
       "integrity": "sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==",
@@ -1533,7 +1572,7 @@
         "error-stack-parser-es",
         "ohash",
         "open",
-        "perfect-debounce",
+        "perfect-debounce@2.0.0",
         "sirv",
         "unplugin-utils",
         "vite",
@@ -1544,8 +1583,8 @@
       "integrity": "sha512-p619BlKFOqQXJ6uDWS1vUPQzuJOD6xJTfftj57JXBGoBD/yeQCowR7pnWcr/FEX4/HVkFbreI6w2uuGBmQOh6A==",
       "dependencies": [
         "@vue/devtools-core",
-        "@vue/devtools-kit",
-        "@vue/devtools-shared",
+        "@vue/devtools-kit@8.0.5",
+        "@vue/devtools-shared@8.0.5",
         "sirv",
         "vite",
         "vite-plugin-inspect",
@@ -1599,7 +1638,7 @@
     "vue-router@4.6.3_vue@3.5.24__typescript@5.9.3_typescript@5.9.3": {
       "integrity": "sha512-ARBedLm9YlbvQomnmq91Os7ck6efydTSpRP3nuOKCvgJOHNrhRoJDSKtee8kcL1Vf7nz6U+PMBL+hTvR3bTVQg==",
       "dependencies": [
-        "@vue/devtools-api",
+        "@vue/devtools-api@6.6.4",
         "vue"
       ]
     },
@@ -1660,6 +1699,7 @@
         "npm:@vitejs/plugin-vue@^6.0.1",
         "npm:@vue/tsconfig@~0.8.1",
         "npm:naive-ui@^2.43.2",
+        "npm:pinia@^3.0.4",
         "npm:rolldown-vite@7.2.5",
         "npm:tailwindcss@^4.1.17",
         "npm:typescript@~5.9.3",
