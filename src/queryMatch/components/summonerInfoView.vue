@@ -98,6 +98,7 @@ import {
     NSteps,
     NSkeleton
 } from "naive-ui";
+import matchAnalysis from "./matchAnalysis.vue";
 import { FlameOutline, PlanetOutline } from "@vicons/ionicons5";
 import useMatchStore from "../store";
 

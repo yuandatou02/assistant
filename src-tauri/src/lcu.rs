@@ -1,9 +1,14 @@
+pub mod matchlisthanle;
+
 use std::time::{Duration, Instant};
 
-use crate::shaco::{rest::RESTClient, utils::process_info::get_client_info};
-use log::error;
+use crate::{
+    lcu::matchlisthanle::MatchListDetails,
+    shaco::{rest::RESTClient, utils::process_info::get_client_info},
+};
+use log::{error, info};
 use once_cell::sync::OnceCell;
-use serde_json::Value;
+use serde_json::{Value, from_value, json};
 use tauri::{AppHandle, Emitter};
 
 // 定义全局的 REST 客户端
@@ -65,4 +70,20 @@ pub fn start_game(path: &str) {
 #[tauri::command]
 pub fn is_lol_client() -> bool {
     get_client_info().is_ok()
+}
+
+#[tauri::command]
+pub async fn get_match_list(uri: &str) -> Result<MatchListDetails, Value> {
+    let client = get_client()?;
+    let res = client.get(uri).await.expect("Failed to Url");
+    match from_value::<MatchListDetails>(res.clone()) {
+        Ok(match_list) => {
+            info!("获取比赛列表成功: {}", json!(match_list));
+            Ok(match_list)
+        }
+        Err(e) => {
+            error!("获取比赛列表失败: {}", e);
+            Err(Value::Null)
+        }
+    }
 }
