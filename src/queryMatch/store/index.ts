@@ -18,6 +18,7 @@ const useMatchStore = defineStore("useMatchStore", {
     summonerInfo: null as { info: SummonerInfo; rank: string[] } | null,
     analysisData: null as RencentDataAnalysisTypes | null,
     recentMatchList: [] as SimpleMatchDetailsTypes[] | null,
+    matchList: [] as SimpleMatchDetailsTypes[] | null,
     participantsInfo: null as null | ParticipantsInfo,
   }),
   actions: {
@@ -56,6 +57,7 @@ const useMatchStore = defineStore("useMatchStore", {
       //   }
       // }
       this.recentMatchList = matchResults;
+      this.matchList = this.recentMatchList.slice(0, 9);
       this.analysisData = findTopChamp(this.recentMatchList);
     },
     // async getMatchDetail(gameId: number) {

@@ -5,14 +5,27 @@
         <div class="flex">
             <summonerInfoView v-if="matchStore.summonerInfo" :key="matchStore.summonerId"
                 :summoner-info="matchStore.summonerInfo" />
+            <div class="w-[254px]" v-else>
+
+            </div>
+            <div class="ml-3 grow">
+                <n-card v-if="!matchStore.matchLoading" class="shadow! h-full!" size="small"
+                    content-style="padding:0 0 0 12px">
+                    <matchErr v-if="matchStore.matchList === null" />
+                    <matchMain v-else-if="matchStore.matchList.length !== 0" />
+                </n-card>
+            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
+import { NCard, NResult, NDrawer, NDrawerContent, NButton } from "naive-ui";
 import { onBeforeMount } from 'vue';
 import queryHeader from './components/queryHeader.vue';
 import summonerInfoView from "./components/summonerInfoView.vue";
+import matchErr from "./components/matchErr.vue";
+import matchMain from "./components/matchMain.vue";
 import useMatchStore from "./store";
 
 const matchStore = useMatchStore();

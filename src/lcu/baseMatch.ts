@@ -35,9 +35,9 @@ export default class BaseMatch {
 
   public getSimpleMatch = (match: Game): SimpleMatchDetailsTypes => {
     const times = this.timestampToDate(match.gameCreation);
-    const kills = match?.participants?.[0]?.stats.kills;
-    const deaths = match?.participants?.[0]?.stats.deaths;
-    const assists = match?.participants?.[0]?.stats.assists;
+    const kills = match.participants[0].stats.kills;
+    const deaths = match.participants[0].stats.deaths;
+    const assists = match.participants[0].stats.assists;
     const kda =
       deaths === 0
         ? kills + assists
