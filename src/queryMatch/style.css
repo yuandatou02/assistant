@@ -38,3 +38,10 @@ body {
   animation: light 4s ease-in-out infinite;
   transition: 0.5s;
 }
+
+.champAvatarColorBlue {
+  background-color: #66b3ff;
+}
+.champAvatarColorRed {
+  background-color: #ff6666;
+}

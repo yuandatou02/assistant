@@ -4,7 +4,8 @@
         <div class="grow p-3 ml-7" :key="matchStore.participantsInfo?.gameId"
             v-if="matchStore.participantsInfo !== null">
             <matchContent :queue-id="matchStore.participantsInfo.queueId"
-                :header-info="matchStore.participantsInfo.headerInfo" />
+                :header-info="matchStore.participantsInfo.headerInfo" :team-one="matchStore.participantsInfo.teamOne"
+                :team-two="matchStore.participantsInfo.teamTwo" :summoner-id="matchStore.summonerId" />
         </div>
     </div>
 </template>

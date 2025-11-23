@@ -114,3 +114,20 @@ export const findTopChamp = (
   });
   return { top3Champions, totalChampions, roleCountMap, oneGameId };
 };
+
+// 通过物品id获取图片地址
+export const getItemImgUrl = (item: number) => {
+  if (item == 0) {
+    return gerNoneImg();
+  } else {
+    return `https://game.gtimg.cn/images/lol/act/img/item/${item}.png`;
+  }
+};
+
+const isDark = localStorage.getItem("theme") === "dark";
+export const gerNoneImg = () => {
+  if (isDark) {
+    return new URL("/src/assets/svg/imageDark.png", import.meta.url).href;
+  }
+  return new URL("/src/assets/svg/image.png", import.meta.url).href;
+};
