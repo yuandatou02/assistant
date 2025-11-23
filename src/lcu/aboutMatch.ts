@@ -45,7 +45,7 @@ const splitRequests = async (
 
   // 循环拆分请求
   while (currentBegIndex < endIndex) {
-    const currentEndIndex = Math.min(currentBegIndex + step, endIndex);
+    const currentEndIndex = Math.min(currentBegIndex + step - 1, endIndex);
     const games = await fetchMatchHistory(
       puuid,
       currentBegIndex,

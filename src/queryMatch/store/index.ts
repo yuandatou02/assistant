@@ -43,7 +43,7 @@ const useMatchStore = defineStore("useMatchStore", {
       });
     },
     async fetchAndProcessMatches(puuid: string) {
-      const matchResults = await baseMatch.dealMatchHistory(puuid, 0, 50);
+      const matchResults = await baseMatch.dealMatchHistory(puuid, 0, 49);
       // if (matchResults !== null) {
       //   for (let i = 0; i < matchResults.length; i++) {
       //     const matchItem = matchResults[i];
