@@ -411,3 +411,55 @@ export interface ParticipantsInfo {
   /** 对局唯一 ID */
   gameId: number;
 }
+
+/**
+ * 用于在“对局详情”或“战绩对比”等场景中进行横向比较的关键指标集合。
+ * 所有字段均为单局数值，可直接用于计算差值、百分比或绘制条形图。
+ */
+export interface PropertiesToCompareTypes {
+  /** 击杀数 */
+  kills: number;
+  /** 助攻数 */
+  assists: number;
+  /** 本局摧毁的防御塔数量（含召唤水晶） */
+  turretKills: number;
+  /** 对英雄造成的总伤害 */
+  totalDamageDealtToChampions: number;
+  /** 小兵 + 野怪总补刀数 */
+  totalMinionsKilled: number;
+  /** 本局获得的金币总数 */
+  goldEarned: number;
+  /** 承受的总伤害（含真实/物理/魔法） */
+  totalDamageTaken: number;
+  /** 视野得分（插眼、排眼、眼存活时间等综合计算） */
+  visionScore: number;
+}
+
+/**
+ * 召唤师在单个平台下的唯一标识信息
+ */
+export interface SumPlatInfo {
+  /** 全局唯一PUUID，跨平台不变 */
+  puuid: string;
+  /** 召唤师昵称（当前平台） */
+  name: string;
+  /** 平台内部加密召唤师ID，用于查询战绩等接口 */
+  summonerId: number;
+}
+
+/**
+ * 对局详情页“可视化条形图”所需的数据项。
+ * 所有字段均为单局实际数值，前端按最大值归一化后渲染进度条。
+ */
+export interface ShowDataTypes {
+  /** 对英雄造成的总伤害 */
+  totalDamageDealtToChampions: number;
+  /** 承受的总伤害 */
+  totalDamageTaken: number;
+  /** 本局获得的金币总数 */
+  goldEarned: number;
+  /** 视野得分 */
+  visionScore: number;
+  /** 小兵 + 野怪总补刀数 */
+  totalMinionsKilled: number;
+}

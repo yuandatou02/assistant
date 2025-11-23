@@ -1,4 +1,5 @@
 import BaseMatch from "@/lcu/baseMatch";
+import MatchDetails from "@/lcu/matchDetails";
 import type {
   ParticipantsInfo,
   SimpleMatchDetailsTypes,
@@ -9,6 +10,7 @@ import { findTopChamp } from "@/lcu/utils";
 import { defineStore } from "pinia";
 
 const baseMatch = new BaseMatch();
+const matchDetials = new MatchDetails();
 
 const useMatchStore = defineStore("useMatchStore", {
   state: () => ({
@@ -45,27 +47,17 @@ const useMatchStore = defineStore("useMatchStore", {
     },
     async fetchAndProcessMatches(puuid: string) {
       const matchResults = await baseMatch.dealMatchHistory(puuid, 0, 49);
-      // if (matchResults !== null) {
-      //   for (let i = 0; i < matchResults.length; i++) {
-      //     const matchItem = matchResults[i];
-      //     if (matchItem !== null) {
-      //       if (i === 0) {
-      //         this.getMatchDetail(matchItem.gameId);
-      //       }
-      //       this.recentMatchList?.push(matchItem);
-      //     }
-      //   }
-      // }
+      this.getMatchDetail(matchResults[0].gameId);
       this.recentMatchList = matchResults;
       this.matchList = this.recentMatchList.slice(0, 9);
       this.analysisData = findTopChamp(this.recentMatchList);
     },
-    // async getMatchDetail(gameId: number) {
-    //   this.participantsInfo = await matchDetials.queryGameDetail(
-    //     gameId,
-    //     this.summonerId
-    //   );
-    // },
+    async getMatchDetail(gameId: number) {
+      this.participantsInfo = await matchDetials.queryGameDetail(
+        gameId,
+        this.summonerId
+      );
+    },
   },
 });
 
