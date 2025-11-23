@@ -24,6 +24,7 @@ body {
   width: 100vw;
   padding: 12px;
   position: relative;
+  overflow: hidden;
 }
 
 .dragDiv {

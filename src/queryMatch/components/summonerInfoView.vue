@@ -78,6 +78,8 @@
                     </n-step>
                 </n-steps>
             </div>
+            <matchAnalysis v-if="matchStore.analysisData && !matchStore.matchLoading"
+                :analysis-data="matchStore.analysisData" :pageType="1" />
         </n-card>
     </div>
 </template>
