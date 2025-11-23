@@ -1,9 +1,10 @@
 <template>
     <div class="flex h-full box-border">
         <matchList />
-        <div class=" grow p-3 ml-7" :key="matchStore.participantsInfo?.gameId"
+        <div class="grow p-3 ml-7" :key="matchStore.participantsInfo?.gameId"
             v-if="matchStore.participantsInfo !== null">
-            <matchContent :queue-id="matchStore.participantsInfo.queueId" />
+            <matchContent :queue-id="matchStore.participantsInfo.queueId"
+                :header-info="matchStore.participantsInfo.headerInfo" />
         </div>
     </div>
 </template>
