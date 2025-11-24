@@ -326,6 +326,10 @@ export interface SimpleMatchDetailsTypes {
   queueId: number;
   /** 所用英雄 ID */
   champId: number;
+  /**
+   * 服务器id
+   */
+  platformId: string;
 }
 
 /**

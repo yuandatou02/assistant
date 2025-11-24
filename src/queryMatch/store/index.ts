@@ -1,12 +1,17 @@
 import BaseMatch from "@/lcu/baseMatch";
 import MatchDetails from "@/lcu/matchDetails";
 import type {
+  Game,
   ParticipantsInfo,
   SimpleMatchDetailsTypes,
 } from "@/lcu/types/MatchLcuTypes";
-import type { SummonerInfo } from "@/lcu/types/SummonerTypes";
+import type {
+  SummonerInfo,
+  SummonerInfoTypes,
+} from "@/lcu/types/SummonerTypes";
 import type { RencentDataAnalysisTypes } from "@/lcu/types/TeammateTypes";
 import { findTopChamp } from "@/lcu/utils";
+import { TencentRsoPlatformId } from "@/resources/areaList";
 import { defineStore } from "pinia";
 
 const baseMatch = new BaseMatch();
@@ -48,6 +53,7 @@ const useMatchStore = defineStore("useMatchStore", {
     async fetchAndProcessMatches(puuid: string) {
       const matchResults = await baseMatch.dealMatchHistory(puuid, 0, 89);
       this.getMatchDetail(matchResults[0].gameId);
+      await this.writeSummonerInfo(this.summonerInfo.info, matchResults[0]);
       this.recentMatchList = matchResults;
       this.matchList = this.recentMatchList.slice(0, 9);
       this.analysisData = findTopChamp(this.recentMatchList);
@@ -57,6 +63,20 @@ const useMatchStore = defineStore("useMatchStore", {
         gameId,
         this.summonerId
       );
+    },
+    async writeSummonerInfo(
+      summonerInfo: SummonerInfo,
+      match: SimpleMatchDetailsTypes
+    ) {
+      const platformId = TencentRsoPlatformId[match.platformId];
+      // 召唤师信息
+      const info: SummonerInfoTypes = {
+        name: summonerInfo.name,
+        summonerId: summonerInfo.currentId,
+        puuid: summonerInfo.puuid,
+        platformId: platformId,
+      };
+      localStorage.setItem("sumInfo", JSON.stringify(info));
     },
   },
 });

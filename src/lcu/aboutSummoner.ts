@@ -160,15 +160,3 @@ export const getCurrentSummonerAllInfo = async () => {
   rankList.push(honorLevel);
   return { summonerInfo, rankList, champLevel };
 };
-
-// 查询所在服务器ID
-export const queryPlatformId = async (puuid: string): Promise<string> => {
-  const matchList = await queryMatchHistory(puuid, 0, 89);
-  if (matchList === null) {
-    return "";
-  } else {
-    return (
-      TencentRsoPlatformId[matchList[0].platformId] || matchList[0].platformId
-    );
-  }
-};

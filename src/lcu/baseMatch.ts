@@ -67,6 +67,7 @@ export default class BaseMatch {
       //游戏对局ID
       queueId: match.queueId,
       champId: match.participants[0].championId,
+      platformId: match.platformId,
     };
   };
   public timestampToDate = (timestamp: number): [string, string] => {

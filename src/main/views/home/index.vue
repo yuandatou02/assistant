@@ -142,12 +142,9 @@ import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import type {
   SummonerData,
-  SummonerInfo,
-  SummonerInfoTypes,
 } from "@/lcu/types/SummonerTypes";
 import {
   getCurrentSummonerAllInfo,
-  queryPlatformId,
 } from "@/lcu/aboutSummoner";
 import summonerMasteryChamp from "@/main/components/summonerMasteryChamp.vue";
 import { createQueryMatchWindow } from "@/background/utils/createWindows";
@@ -161,7 +158,7 @@ const summonerData = reactive<SummonerData>({
 onMounted(() => {
   invoke<boolean>("is_lol_client").then((val: boolean) => {
     if (val) {
-      initData(true);
+      initData();
     } else {
       onClientLaunch();
     }
@@ -174,7 +171,7 @@ const onClientLaunch = async () => {
     const interval = setInterval(async () => {
       timer++;
       if (summonerData.summonerInfo === null) {
-        initData(true);
+        initData();
       } else {
         clearInterval(interval);
         closeMessageOn();
@@ -187,29 +184,16 @@ const onClientLaunch = async () => {
   });
 };
 
-const initData = async (isFirst: boolean) => {
+const initData = async () => {
   const summonerInfo = await getCurrentSummonerAllInfo();
   if (summonerInfo === null) return false;
-  if (isFirst) {
-    await writeSumInfo(summonerInfo.summonerInfo);
-  }
+
   summonerData.summonerInfo = summonerInfo.summonerInfo;
   summonerData.rankList = summonerInfo.rankList;
   summonerData.champLevel = summonerInfo.champLevel;
   return true;
 };
 
-const writeSumInfo = async (sInfo: SummonerInfo) => {
-  const platformId = await queryPlatformId(sInfo.puuid);
-  // 设置召唤师信息
-  const sumInfo: SummonerInfoTypes = {
-    name: sInfo.name,
-    summonerId: sInfo.currentId,
-    puuid: sInfo.puuid,
-    platformId: platformId,
-  };
-  localStorage.setItem("sumInfo", JSON.stringify(sumInfo));
-};
 
 const openWin = () => {
   createQueryMatchWindow();
