@@ -163,7 +163,7 @@ export const getCurrentSummonerAllInfo = async () => {
 
 // 查询所在服务器ID
 export const queryPlatformId = async (puuid: string): Promise<string> => {
-  const matchList = await queryMatchHistory(puuid, 0, 0);
+  const matchList = await queryMatchHistory(puuid, 0, 89);
   if (matchList === null) {
     return "";
   } else {

@@ -14,7 +14,7 @@ export const queryMatchHistory = async (
 ): Promise<Game[]> => {
   try {
     let allGame: Game[] = [];
-    const MAX_REQUEST_SIZE = 50;
+    const MAX_REQUEST_SIZE = 100;
     // 如果请求范围超过最大限制，拆分请求
     if (endIndex - begIndex > MAX_REQUEST_SIZE) {
       allGame = await splitRequests(puuid, begIndex, endIndex);

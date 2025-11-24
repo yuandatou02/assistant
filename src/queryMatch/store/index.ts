@@ -46,7 +46,7 @@ const useMatchStore = defineStore("useMatchStore", {
       });
     },
     async fetchAndProcessMatches(puuid: string) {
-      const matchResults = await baseMatch.dealMatchHistory(puuid, 0, 49);
+      const matchResults = await baseMatch.dealMatchHistory(puuid, 0, 89);
       this.getMatchDetail(matchResults[0].gameId);
       this.recentMatchList = matchResults;
       this.matchList = this.recentMatchList.slice(0, 9);
