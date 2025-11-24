@@ -1,40 +1,20 @@
 <template>
   <div class="h-full flex flex-col" v-if="queueId !== 1700">
-    <match-content-header
-      :title-list="headerInfo"
-      :title="titleArr[rotatedIndex][1]"
-      @change-show="changeShowMode"
-    />
+    <match-content-header :title-list="headerInfo" :title="titleArr[rotatedIndex][1]" @change-show="changeShowMode" />
     <div class="flex grow justify-between">
-      <match-details
-        @open-drawer="openMatchDrawer"
-        :summoner-list="teamOne"
-        :is-one="true"
-        :summoner-id="summonerId"
-        :show-mode="titleArr[rotatedIndex][0]"
-      />
-      <match-details
-        @open-drawer="openMatchDrawer"
-        :summoner-list="teamTwo"
-        :is-one="false"
-        :summoner-id="summonerId"
-        :show-mode="titleArr[rotatedIndex][0]"
-      />
+      <match-details @open-drawer="openMatchDrawer" :summoner-list="teamOne" :is-one="true" :summoner-id="summonerId"
+        :show-mode="titleArr[rotatedIndex][0]" />
+      <match-details @open-drawer="openMatchDrawer" :summoner-list="teamTwo" :is-one="false" :summoner-id="summonerId"
+        :show-mode="titleArr[rotatedIndex][0]" />
     </div>
   </div>
 
-  <n-drawer
-    v-model:show="isMatchDra"
-    v-if="!isGameIn"
-    style="
+  <n-drawer v-model:show="isMatchDra" v-if="!isGameIn" style="
       border-top-right-radius: 0.45rem;
       border-bottom-right-radius: 0.45rem;
-    "
-    @after-leave="curMatchDraData = null"
-    :auto-focus="false"
-    :width="265"
-    placement="left"
-  ></n-drawer>
+    " @after-leave="curMatchDraData = null" :auto-focus="false" :width="265" placement="left">
+    <match-drawer v-if="curMatchDraData !== null" :personal-details="curMatchDraData" :is-allow-add="isAllowAdd" />
+  </n-drawer>
 </template>
 
 <script lang="ts" setup>
@@ -42,6 +22,7 @@ import { ref, type Ref } from "vue";
 import { NDrawer } from "naive-ui";
 import matchContentHeader from "./matchContentHeader.vue";
 import matchDetails from "./matchDetails.vue";
+import matchDrawer from "./matchDrawer.vue";
 import type { SumDetail, SummonerDetailInfo } from "@/lcu/types/MatchLcuTypes";
 import { getDrawerData } from "@/lcu/aboutMatch";
 
