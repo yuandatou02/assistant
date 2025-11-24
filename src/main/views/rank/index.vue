@@ -9,7 +9,8 @@
             </n-space>
             <n-space class="mt-2! mb-2.5!" justify="space-between">
                 <n-button v-for="(button, index) in ghostButtons" :key="index" :bordered="false"
-                    :type="isCheck === button.value ? 'info' : 'tertiary'" size="small" secondary>
+                    :type="isCheck === button.value ? 'info' : 'tertiary'" size="small" secondary
+                    @click="button.action">
                     {{ button.label }}
                 </n-button>
             </n-space>
@@ -49,7 +50,7 @@
                                             禁用 {{ champ.ban }}
                                         </div>
                                         <div :class="isCheck === 3 ? 'text-blue-400' : 'text-gray-400 '"
-                                            class="text-xs w-18">
+                                            class="text-xs w-19">
                                             登场率 {{ champ.appearance }}
                                         </div>
                                     </div>
@@ -72,7 +73,7 @@ import {
     NList, NListItem, NScrollbar, useMessage, NDropdown, NButton, NDrawer, arDZ
 } from "naive-ui";
 import searchChamp from "@/main/components/searchChamp.vue";
-import { ref, type Ref } from "vue";
+import { onMounted, ref, type Ref } from "vue";
 import type { ChampInfo } from "@/lcu/types/RankTypes";
 import { aliasToId } from "@/resources/champList";
 import { queryCNServe } from "@/lcu/abuoutRank";
@@ -84,13 +85,7 @@ const lane = ref(configRank.lane);
 const isCheck = ref(1);
 const champList: Ref<ChampInfo[]> = ref([]);
 const message = useMessage();
-// ghostButtons列表
-const ghostButtons = [
-    { label: '综合', value: 1, },
-    { label: '胜率', value: 2, },
-    { label: '禁用', value: 4, },
-    { label: '登场', value: 3, },
-];
+
 
 const searchChampData = (value: string) => {
     if (value === '') {
@@ -145,6 +140,44 @@ const queryChampRankData = async (): Promise<boolean> => {
         return false;
     }
     return false;
-}
+};
 
+// 根据不同的参数进行 快速排序
+const quickSort = (factor: string) => {
+    champList.value.sort((x: any, y: any) => {
+        return factor == 'sortId' ? parseFloat(x[factor]) - parseFloat(y[factor]) : parseFloat(y[factor]) - parseFloat(x[factor]);
+    });
+};
+
+const getComprehensiveRankData = () => {
+    isCheck.value = 1;
+    quickSort('sortId');
+};
+// 根据胜率数据改变排行
+const getWinRankData = () => {
+    isCheck.value = 2;
+    quickSort('win');
+};
+// 根据出场率改变排行
+const getAppearanceRankData = () => {
+    isCheck.value = 3;
+    quickSort('appearance');
+};
+// 根据禁用率改变排行
+const getBanRankData = () => {
+    isCheck.value = 4;
+    quickSort('ban');
+};
+
+// ghostButtons列表
+const ghostButtons = [
+    { label: '综合', value: 1, action: getComprehensiveRankData },
+    { label: '胜率', value: 2, action: getWinRankData },
+    { label: '禁用', value: 4, action: getBanRankData },
+    { label: '登场', value: 3, action: getAppearanceRankData },
+];
+
+onMounted(async () => {
+    await queryChampRankData();
+});
 </script>

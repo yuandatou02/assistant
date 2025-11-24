@@ -9,11 +9,11 @@
 <script lang="ts" setup>
 import { keywordsList } from "@/resources/champList";
 import { NAutoComplete, NAvatar, NButton, type SelectOption } from "naive-ui";
-import { computed, h, ref } from "vue";
+import { computed, h, ref, type VNodeChild } from "vue";
 
 const inputValue = ref("");
 // 渲染提示框
-const renderLabel = (option: SelectOption) => [
+const renderLabel = (option: SelectOption): VNodeChild => [
     h("div", { style: "display: flex; align-items: center;" }, [
         h(NAvatar, {
             style: "margin-right: 8px;",
