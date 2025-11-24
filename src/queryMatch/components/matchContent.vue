@@ -13,7 +13,8 @@
       border-top-right-radius: 0.45rem;
       border-bottom-right-radius: 0.45rem;
     " @after-leave="curMatchDraData = null" :auto-focus="false" :width="265" placement="left">
-    <match-drawer v-if="curMatchDraData !== null" :personal-details="curMatchDraData" :is-allow-add="isAllowAdd" />
+    <match-drawer v-if="curMatchDraData !== null" :personal-details="curMatchDraData" :is-allow-add="isAllowAdd"
+      @search-summoner="searchSummoner" />
   </n-drawer>
 </template>
 
@@ -34,6 +35,7 @@ const props = defineProps<{
   summonerId: number;
   isGameIn: boolean;
 }>();
+const emits = defineEmits(["changeSummoner"]);
 
 const rotatedIndex = ref(0);
 const isAllowAdd = ref(true);
@@ -66,5 +68,10 @@ const openMatchDrawer = async (summonerId: number) => {
     ) !== undefined;
   curMatchDraData.value = await getDrawerData(summonerInfo);
   isMatchDra.value = true;
+};
+
+const searchSummoner = () => {
+  isMatchDra.value = false;
+  emits("changeSummoner", curMatchDraData.value?.summonerId);
 };
 </script>

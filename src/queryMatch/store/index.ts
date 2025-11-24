@@ -1,7 +1,6 @@
 import BaseMatch from "@/lcu/baseMatch";
 import MatchDetails from "@/lcu/matchDetails";
 import type {
-  Game,
   ParticipantsInfo,
   SimpleMatchDetailsTypes,
 } from "@/lcu/types/MatchLcuTypes";
@@ -48,21 +47,29 @@ const useMatchStore = defineStore("useMatchStore", {
       this.analysisData = null;
 
       // 获取最近对局数据分析
-      this.fetchAndProcessMatches(this.summonerInfo.info.puuid).then(() => {
-        if (this.matchLoading) {
+      await this.fetchAndProcessMatches(this.summonerInfo.info.puuid);
+    },
+    async fetchAndProcessMatches(puuid: string) {
+      try {
+        const matchResults = await baseMatch.dealMatchHistory(puuid, 0, 89);
+        if (!matchResults || matchResults.length === 0) {
           setTimeout(() => {
             this.matchLoading = false;
           }, 500);
+          return;
         }
-      });
-    },
-    async fetchAndProcessMatches(puuid: string) {
-      const matchResults = await baseMatch.dealMatchHistory(puuid, 0, 89);
-      this.getMatchDetail(matchResults[0].gameId);
-      await this.writeSummonerInfo(this.summonerInfo.info, matchResults[0]);
-      this.recentMatchList = matchResults;
-      this.matchList = this.recentMatchList.slice(0, 9);
-      this.analysisData = findTopChamp(this.recentMatchList);
+        this.getMatchDetail(matchResults[0].gameId);
+        await this.writeSummonerInfo(this.summonerInfo.info, matchResults[0]);
+        this.recentMatchList = matchResults;
+        this.matchList = this.recentMatchList.slice(0, 9);
+        this.analysisData = findTopChamp(this.recentMatchList);
+      } catch (error) {
+        console.error("处理比赛数据时出错:", error);
+      } finally {
+        setTimeout(() => {
+          this.matchLoading = false;
+        }, 500);
+      }
     },
     async getMatchDetail(gameId: number) {
       this.participantsInfo = await matchDetials.queryGameDetail(

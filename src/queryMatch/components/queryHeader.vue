@@ -3,12 +3,12 @@
     <div class="flex gap-x-2 items-center mr-3">
       <img src="@/assets/icon/app-icon.png" class="h-10" draggable="false" alt="应用图标" />
       <img src="@/assets/icon/Frank.png" draggable="false" alt="应用名称" />
-      <n-button v-if="false" size="small" class="ml-[30px] w-[90.41px] text-[#666666]" secondary type="tertiary">
+      <n-button size="small" class="ml-[30px] w-[90.41px] text-[#666666]" secondary type="tertiary">
         lolfrank.cn
       </n-button>
-      <n-button v-else size="small" class="ml-[30px] w-[90.41px]" secondary type="info">
+      <!-- <n-button v-else size="small" class="ml-[30px] w-[90.41px]" secondary type="info">
         Back Self
-      </n-button>
+      </n-button> -->
     </div>
     <div class="grow flex items-center gap-x-3">
       <n-button size="small" secondary type="tertiary" :bordered="false"

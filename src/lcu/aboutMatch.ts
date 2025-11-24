@@ -11,7 +11,7 @@ export const queryMatchHistory = async (
   puuid: string,
   begIndex: number,
   endIndex: number
-): Promise<Game[]> => {
+): Promise<Game[] | null> => {
   try {
     let allGame: Game[] = [];
     const MAX_REQUEST_SIZE = 100;
@@ -33,7 +33,7 @@ export const queryMatchHistory = async (
     return uniqueGames.sort((a, b) => b.gameCreation - a.gameCreation);
   } catch (error) {
     console.error("Error fetching match history:", error);
-    return []; // 或者根据需要返回其他值
+    return null; // 或者根据需要返回其他值
   }
 };
 
@@ -73,8 +73,16 @@ const fetchMatchHistory = async (
   endIndex: number
 ): Promise<Game[]> => {
   const uri = `/lol-match-history/v1/products/lol/${puuid}/matches?begIndex=${begIndex}&endIndex=${endIndex}`;
-  const matchList = await invoke<MatchHistoryResp>("get_match_list", { uri });
-  return matchList.games.games;
+
+  try {
+    const matchList = await invoke<MatchHistoryResp>("get_match_list", { uri });
+
+    // 现在 matchList 一定是合法结构，否则进 catch
+    return matchList.games.games || [];
+  } catch (err) {
+    console.warn('[fetchMatchHistory] 获取失败:', err);
+    return []; // 降级为空数组，让后续逻辑继续跑
+  }
 };
 
 export const getDrawerData = async (

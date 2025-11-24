@@ -78,10 +78,10 @@
             </n-list-item>
         </n-list>
         <div class="mt-2 flex justify-between">
-            <n-button type="success" :bordered="false">
+            <n-button type="success" :bordered="false" @click="searchSummoner">
                 查看详细信息
             </n-button>
-            <n-button type="warning" :bordered="false" :disabled="isAllowAdd===false">
+            <n-button type="warning" :bordered="false" :disabled="isAllowAdd === false">
                 新增排位笔记
             </n-button>
         </div>
@@ -102,12 +102,17 @@ import {
 } from "naive-ui";
 
 defineProps<{ personalDetails: SumDetail, isAllowAdd: boolean; }>();
+const emit = defineEmits(["searchSummoner"]);
 
 const getImgUrl = (rune: number) => {
     if (rune === 0) {
         return gerNoneImg();
     }
     return new URL(`/src/assets/runes/${rune}.png`, import.meta.url).href;
+};
+
+const searchSummoner = () => {
+    emit("searchSummoner");
 };
 </script>
 

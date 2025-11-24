@@ -11,8 +11,8 @@
             <div class="ml-3 grow">
                 <n-card v-if="!matchStore.matchLoading" class="shadow! h-full!" size="small"
                     content-style="padding:0 0 0 12px">
-                    <matchErr v-if="matchStore.matchList === null" />
-                    <matchMain v-else-if="matchStore.matchList.length !== 0" />
+                    <matchErr v-if="matchStore.matchList?.length === 0" @reload="reload" />
+                    <matchMain v-else-if="matchStore.matchList?.length !== 0" />
                     <div v-else-if="!matchStore.matchLoading" class="w-full h-full flex justify-center items-center">
                         <n-result size="large" status="404" title="召唤师数据为空" description="此页数不存在数据，请返回前一页">
                             <template #footer>
@@ -50,4 +50,8 @@ onBeforeMount(async () => {
         await matchStore.init();
     }
 });
+
+const reload = async () => {
+    await matchStore.init(matchStore.summonerId);
+};
 </script>

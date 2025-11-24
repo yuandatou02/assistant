@@ -23,10 +23,10 @@ export default class BaseMatch {
     puuid: string,
     begIndex: number,
     endIndex: number
-  ): Promise<SimpleMatchDetailsTypes[]> => {
+  ): Promise<SimpleMatchDetailsTypes[] | null> => {
     const matchList = await queryMatchHistory(puuid, begIndex, endIndex);
-    if (matchList === null || matchList.length === 0) {
-      return [];
+    if (matchList === null) {
+      return null;
     }
     return matchList.map((matchListElement) => {
       return this.getSimpleMatch(matchListElement);

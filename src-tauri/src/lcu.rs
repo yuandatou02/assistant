@@ -73,15 +73,13 @@ pub fn is_lol_client() -> bool {
 }
 
 #[tauri::command]
-pub async fn get_match_list(uri: &str) -> Result<MatchListDetails, Value> {
+pub async fn get_match_list(uri: &str) -> Result<MatchListDetails, String> {
     let client = get_client()?;
     info!("获取比赛列表地址: {}", uri);
-    let res = client.get(uri).await.expect("Failed to Url");
-    match from_value::<MatchListDetails>(res.clone()) {
-        Ok(match_list) => Ok(match_list),
-        Err(e) => {
-            error!("获取比赛列表失败: {}", e);
-            Err(Value::Null)
-        }
-    }
+    let res = client
+        .get(uri)
+        .await
+        .map_err(|e| format!("请求超时:{}", e))?;
+
+    from_value::<MatchListDetails>(res).map_err(|e| format!("解析失败:{}", e))
 }
