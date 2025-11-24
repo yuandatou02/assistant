@@ -61,6 +61,11 @@
                 </n-scrollbar>
             </n-list>
         </n-card>
+        <n-drawer style="border-top-left-radius: 0.5rem;border-top-right-radius: 0.5rem" placement="bottom"
+            :auto-focus="true" height="500" v-model:show="isShowDrawer" @after-leave="initDesDrawer(false)">
+            <champ-detail :champ-id="currentChampDrawer.champId" :is101="is101" :lane="lane" :tier="tier"
+                :selected-list="currentChampDrawer.selectedList" />
+        </n-drawer>
     </div>
 </template>
 
@@ -73,17 +78,23 @@ import {
     NList, NListItem, NScrollbar, useMessage, NDropdown, NButton, NDrawer, arDZ
 } from "naive-ui";
 import searchChamp from "@/main/components/searchChamp.vue";
+import champDetail from "./champDetail.vue";
 import { onMounted, ref, type Ref } from "vue";
 import type { ChampInfo } from "@/lcu/types/RankTypes";
-import { aliasToId } from "@/resources/champList";
+import { aliasToId, champDict } from "@/resources/champList";
 import { queryCNServe } from "@/lcu/abuoutRank";
 
 const configRank: ConfigRank = JSON.parse(localStorage.getItem("configRank") as string);
 const is101 = ref(configRank.is101);
 const tier = ref(configRank.tier);
 const lane = ref(configRank.lane);
+const isShowDrawer = ref(false);
 const isCheck = ref(1);
 const champList: Ref<ChampInfo[]> = ref([]);
+const currentChampDrawer: Ref<{ champId: number, selectedList: string[]; }> = ref({
+    champId: 0,
+    selectedList: [] as string[]
+});
 const message = useMessage();
 
 
@@ -94,7 +105,7 @@ const searchChampData = (value: string) => {
     }
     const resultChamp = champList.value.filter(item => item.champId === aliasToId[value])[0];
     if (resultChamp) {
-        message.success('查询成功');
+        initDesDrawer(true, resultChamp.champId, resultChamp.imgUrl, resultChamp.tLevel);
     } else {
         message.warning('当前英雄在此位置不存在');
     }
@@ -176,6 +187,23 @@ const ghostButtons = [
     { label: '禁用', value: 4, action: getBanRankData },
     { label: '登场', value: 3, action: getAppearanceRankData },
 ];
+
+// 初始化或者清空抽屉数据 打开英雄详细数据抽屉窗口
+const initDesDrawer = (isInit: boolean, champId?: number, imgUrl?: string, level?: string) => {
+    if (isInit) {
+        isShowDrawer.value = true;
+        // @ts-ignore
+        const selectedList: string[] = [imgUrl, champDict[champId].label + '•' + champDict[champId].title, level, String(champId)];
+        // @ts-ignore
+        currentChampDrawer.value = {
+            champId: champId, selectedList: selectedList,
+        };
+    } else {
+        currentChampDrawer.value = {
+            champId: 0, selectedList: []
+        };
+    }
+};
 
 onMounted(async () => {
     await queryChampRankData();
