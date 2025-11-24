@@ -25,7 +25,39 @@
                         </n-dropdown>
                     </div>
                 </template>
-                <n-scrollbar class="max-h-[432px]! pr-[13px]!"></n-scrollbar>
+                <n-scrollbar class="max-h-[432px]! pr-[13px]!">
+                    <n-list-item v-if="champList.length !== 0" v-for="champ in champList">
+                        <div class="flex gap-x-3">
+                            <div
+                                class="flex items-center justify-center h-12 w-12 rounded bg-blue-100 cursor-pointer dark:bg-[#70c0e850]">
+                                <n-avatar :size="40" :bordered="false" lazy :render-placeholder="() => null"
+                                    :intersection-observer-options="{
+                                        root: '#image-scroll-container',
+                                    }" :src="champ.imgUrl"
+                                    fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png" />
+                            </div>
+                            <div class="grow">
+                                <div class="h-12 flex flex-col gap-y-2.5">
+                                    <div class="text-sm">{{ champ.name }}</div>
+                                    <div class="flex justify-between items-end relative">
+                                        <div class="text-xs w-17"
+                                            :class="isCheck === 2 ? 'text-blue-400' : 'text-gray-400 '">
+                                            胜率 {{ champ.win }}
+                                        </div>
+                                        <div :class="isCheck === 4 ? 'text-blue-400' : 'text-gray-400 '"
+                                            class="text-xs w-17">
+                                            禁用 {{ champ.ban }}
+                                        </div>
+                                        <div :class="isCheck === 3 ? 'text-blue-400' : 'text-gray-400 '"
+                                            class="text-xs w-18">
+                                            登场率 {{ champ.appearance }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </n-list-item>
+                </n-scrollbar>
             </n-list>
         </n-card>
     </div>
@@ -43,7 +75,7 @@ import searchChamp from "@/main/components/searchChamp.vue";
 import { ref, type Ref } from "vue";
 import type { ChampInfo } from "@/lcu/types/RankTypes";
 import { aliasToId } from "@/resources/champList";
-import { queryCNserve } from "@/lcu/abuoutRank";
+import { queryCNServe } from "@/lcu/abuoutRank";
 
 const configRank: ConfigRank = JSON.parse(localStorage.getItem("configRank") as string);
 const is101 = ref(configRank.is101);
@@ -79,8 +111,40 @@ const handleSelect = (positon: string) => {
     configRank.lane = positon;
     localStorage.setItem("configRank", JSON.stringify(configRank));
     lane.value = positon;
+    queryChampRankData().then(() => {
+        switch (positon) {
+            case 'top':
+                message.success('上单数据更新成功');
+                break;
+            case 'jungle':
+                message.success('打野数据更新成功');
+                break;
+            case 'mid':
+                message.success('中单数据更新成功');
+                break;
+            case 'bottom':
+                message.success('下路数据更新成功');
+                break;
+            case 'support':
+                message.success('辅助数据更新成功');
+                break;
+        }
+    });
 };
 
+
 // 获取不同服务器的数据
-queryCNserve(configRank, tier.value, lane.value, getLocalDateStr(), 1);
+const queryChampRankData = async (): Promise<boolean> => {
+    if (is101.value) {
+        const champInfo = await queryCNServe(configRank, tier.value, lane.value, getLocalDateStr(), 1);
+        if (champInfo) {
+            champList.value = champInfo;
+            return true;
+        }
+    } else {
+        return false;
+    }
+    return false;
+}
+
 </script>

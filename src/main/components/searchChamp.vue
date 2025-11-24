@@ -26,13 +26,12 @@ const renderLabel = (option: SelectOption) => [
 ];
 
 // 生成输入框渲染提示选项
-const autoOptions = computed(() => {
-    if (inputValue.value === '' || inputValue.value === null) return;
+const autoOptions = computed<SelectOption[]>(() => {
+    if (inputValue.value === '' || inputValue.value === null) return [];
     const keyword = inputValue.value.toLowerCase();
-    const renderList = keywordsList.filter((item) => item.keywords.toLowerCase().includes(keyword));
-    if (renderList.length > 5 || renderList.length === 0) {
-        return;
-    }
+    const renderList = keywordsList.filter((item) => item.keywords.toLowerCase().includes(keyword)).slice(0, 5);
+    console.log(renderList);
+
     return renderList.map((champ) => {
         return {
             value: champ.alias,

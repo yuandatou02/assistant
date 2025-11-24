@@ -110,3 +110,9 @@ export const getLocalDateStr = () => {
   const day = String(d.getDate()).padStart(2, "0");
   return Number(`${year}${month}${day}`);
 };
+
+export const toPercent = (point: number) => {
+  var str = Number(point * 100).toFixed(1);
+  str += "%";
+  return str;
+};
