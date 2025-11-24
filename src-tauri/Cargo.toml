@@ -29,3 +29,4 @@ tokio = { version = "1.48.0", features = ["full"] }
 once_cell = "1.21.3"
 reqwest = { version = "0.12.24", features = ["json"] }
 futures-util = "0.3.31"
+tauri-plugin-http = "2.5.4"

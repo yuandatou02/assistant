@@ -19,11 +19,13 @@
                 <template #header>
                     <div class="h-7 flex gap-x-5">
                         <search-champ @select-function="searchChampData" />
-                        <n-dropdown trigger="hover" placement="left-start" :options="positionOptions">
+                        <n-dropdown trigger="hover" @select="handleSelect" placement="left-start"
+                            :options="positionOptions">
                             <div class=" absolute right-2 top-2" :class="lane"></div>
                         </n-dropdown>
                     </div>
                 </template>
+                <n-scrollbar class="max-h-[432px]! pr-[13px]!"></n-scrollbar>
             </n-list>
         </n-card>
     </div>
@@ -32,7 +34,7 @@
 <script lang="ts" setup>
 import "./assistCommon.css";
 import type { ConfigRank } from "@/background/types";
-import { cnOptions, krOptions, positionOptions, rankOptions } from "@/main/utils/rankUtils";
+import { cnOptions, getLocalDateStr, krOptions, positionOptions, rankOptions } from "@/main/utils/rankUtils";
 import {
     NCard, NAvatar, NSpace, NSelect, NBackTop,
     NList, NListItem, NScrollbar, useMessage, NDropdown, NButton, NDrawer, arDZ
@@ -41,6 +43,7 @@ import searchChamp from "@/main/components/searchChamp.vue";
 import { ref, type Ref } from "vue";
 import type { ChampInfo } from "@/lcu/types/RankTypes";
 import { aliasToId } from "@/resources/champList";
+import { queryCNserve } from "@/lcu/abuoutRank";
 
 const configRank: ConfigRank = JSON.parse(localStorage.getItem("configRank") as string);
 const is101 = ref(configRank.is101);
@@ -69,4 +72,15 @@ const searchChampData = (value: string) => {
         message.warning('当前英雄在此位置不存在');
     }
 };
+
+const handleSelect = (positon: string) => {
+    champList.value = [];
+    isCheck.value = 1;
+    configRank.lane = positon;
+    localStorage.setItem("configRank", JSON.stringify(configRank));
+    lane.value = positon;
+};
+
+// 获取不同服务器的数据
+queryCNserve(configRank, tier.value, lane.value, getLocalDateStr(), 1);
 </script>

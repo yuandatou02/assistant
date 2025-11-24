@@ -17,6 +17,7 @@ pub async fn run() {
             Ok(())
         })
         .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_http::init())
         .invoke_handler(tauri::generate_handler![
             listen_for_client_start,
             invoke_lcu,
