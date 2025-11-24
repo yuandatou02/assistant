@@ -41,6 +41,12 @@ const useMatchStore = defineStore("useMatchStore", {
       }
       this.summonerId = result.summonerInfo.currentId;
       this.summonerInfo = { info: result.summonerInfo, rank: result.rankList };
+
+      this.matchLoading = true;
+      this.matchList = [];
+      this.recentMatchList = [];
+      this.analysisData = null;
+
       // 获取最近对局数据分析
       this.fetchAndProcessMatches(this.summonerInfo.info.puuid).then(() => {
         if (this.matchLoading) {
@@ -77,6 +83,14 @@ const useMatchStore = defineStore("useMatchStore", {
         platformId: platformId,
       };
       localStorage.setItem("sumInfo", JSON.stringify(info));
+    },
+    getMatchList(page = 1) {
+      if (this.summonerInfo === null) {
+        return false;
+      }
+      this.matchList = this.recentMatchList.slice((page - 1) * 9, page * 9);
+      this.getMatchDetail(this.matchList[0].gameId);
+      return true;
     },
   },
 });

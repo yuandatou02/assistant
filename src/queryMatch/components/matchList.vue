@@ -1,7 +1,7 @@
 <template>
     <n-list>
         <n-list-item class="w-[186px]!" v-for="(match, index) in matchStore.matchList">
-            <n-space>
+            <n-space @click.prevent="renderMatch(index, match.gameId)">
                 <n-avatar :bordered="false" :size="42" style="display:block"
                     :src="'https://game.gtimg.cn/images/lol/act/img/champion/' + match.champImgUrl"
                     fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png" />
@@ -47,8 +47,17 @@
 import { NAvatar, NSpace, NTag, NList, NListItem, NIcon } from "naive-ui";
 import { ThumbsUpOutline, ThumbsDownOutline } from "@vicons/ionicons5";
 import useMatchStore from "../store";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 const matchStore = useMatchStore();
 const curMatch = ref(0);
+
+watch(() => matchStore.matchList, () => {
+    curMatch.value = 0;
+});
+
+const renderMatch = (index: number, gameId: number) => {
+    curMatch.value = index;
+    matchStore.getMatchDetail(gameId);
+};
 </script>
