@@ -250,3 +250,10 @@ export interface ChampionMastery {
   /** 已获得的熟练度代币数量 */
   tokensEarned: number;
 }
+
+export interface SummonerInfoTypes{
+  puuid:string;
+  name:string
+  summonerId:number;
+  platformId:string;
+}
