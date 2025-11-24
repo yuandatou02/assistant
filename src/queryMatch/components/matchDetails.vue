@@ -2,6 +2,7 @@
   <div class="flex flex-col justify-between mt-[17px]">
     <n-space v-for="summoner in summonerList" vertical>
       <match-sum-details
+        @click="showSumDetails(summoner.accountId)"
         :summoner="summoner"
         :is-one="isOne"
         :summoner-id="summonerId"
@@ -73,6 +74,12 @@ defineProps<{
   summonerId: number;
   showMode: string;
 }>();
+
+const emits = defineEmits(["openDrawer"]);
+
+const showSumDetails = (summonerId: number) => {
+  emits("openDrawer", summonerId);
+};
 </script>
 
 <style scoped>

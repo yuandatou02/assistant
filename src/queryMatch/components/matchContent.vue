@@ -7,12 +7,14 @@
     />
     <div class="flex grow justify-between">
       <match-details
+        @open-drawer="openMatchDrawer"
         :summoner-list="teamOne"
         :is-one="true"
         :summoner-id="summonerId"
         :show-mode="titleArr[rotatedIndex][0]"
       />
       <match-details
+        @open-drawer="openMatchDrawer"
         :summoner-list="teamTwo"
         :is-one="false"
         :summoner-id="summonerId"
@@ -20,23 +22,42 @@
       />
     </div>
   </div>
+
+  <n-drawer
+    v-model:show="isMatchDra"
+    v-if="!isGameIn"
+    style="
+      border-top-right-radius: 0.45rem;
+      border-bottom-right-radius: 0.45rem;
+    "
+    @after-leave="curMatchDraData = null"
+    :auto-focus="false"
+    :width="265"
+    placement="left"
+  ></n-drawer>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, type Ref } from "vue";
+import { NDrawer } from "naive-ui";
 import matchContentHeader from "./matchContentHeader.vue";
 import matchDetails from "./matchDetails.vue";
-import type { SummonerDetailInfo } from "@/lcu/types/MatchLcuTypes";
+import type { SumDetail, SummonerDetailInfo } from "@/lcu/types/MatchLcuTypes";
+import { getDrawerData } from "@/lcu/aboutMatch";
 
-defineProps<{
+const props = defineProps<{
   queueId: number;
   headerInfo: string[];
   teamOne: SummonerDetailInfo[];
   teamTwo: SummonerDetailInfo[];
   summonerId: number;
+  isGameIn: boolean;
 }>();
 
 const rotatedIndex = ref(0);
+const isAllowAdd = ref(true);
+const isMatchDra = ref(false);
+const curMatchDraData: Ref<SumDetail | null> = ref(null);
 const titleArr = [
   ["totalDamageDealtToChampions", "输出伤害"],
   ["totalDamageTaken", "承受伤害"],
@@ -47,5 +68,22 @@ const titleArr = [
 
 const changeShowMode = () => {
   rotatedIndex.value = (rotatedIndex.value += 1) % titleArr.length;
+};
+
+const openMatchDrawer = async (summonerId: number) => {
+  if (props.isGameIn) {
+    // 如果是游戏里面的窗口显示此页面，不让打开抽屉窗口
+    return;
+  }
+  const allTeam = props.teamOne.concat(props.teamTwo);
+  const summonerInfo = allTeam.find((item) => item.accountId === summonerId);
+  isAllowAdd.value =
+    allTeam.find(
+      (item) =>
+        item.accountId ===
+        JSON.parse(localStorage.getItem("sumInfo") as string).summonerId
+    ) !== undefined;
+  curMatchDraData.value = await getDrawerData(summonerInfo);
+  isMatchDra.value = true;
 };
 </script>

@@ -463,3 +463,41 @@ export interface ShowDataTypes {
   /** 小兵 + 野怪总补刀数 */
   totalMinionsKilled: number;
 }
+
+/**
+ * 对局结束后“战绩汇总”卡片里展示的一条玩家数据
+ */
+export interface SumDetail {
+  /** 玩家游戏内名字 */
+  name: string;
+
+  /** 英雄头像 url */
+  champImgUrl: string;
+
+  /** 本局英雄等级（1-18） */
+  champLevel: number;
+
+  /** K/D/A 字符串，格式如 "12/3/8" */
+  kda: string;
+
+  /** 召唤师技能 1 的 id（对应 ddragon 或本地图标） */
+  spell1Id: number;
+
+  /** 召唤师技能 2 的 id */
+  spell2Id: number;
+
+  /** 本局携带的符文 id 列表（主系+副系，长度通常为 6） */
+  runesList: number[];
+
+  /**
+   * 出装路线二维数组
+   * 外层每件装备，内层 [itemId, count] 或 [itemId, count, isTrinket] 等自定义结构
+   */
+  listItemData: any[][];
+
+  /** 段位信息文本数组，例如 ["峡谷之巅", "大师 300 LP"] */
+  rankData: string[];
+
+  /** 玩家唯一标识，用于后续查询详细战绩或跳转 */
+  summonerId: number;
+}

@@ -1,5 +1,11 @@
 import { invoke } from "@tauri-apps/api/core";
-import type { Game, MatchHistoryResp } from "./types/MatchLcuTypes";
+import type {
+  Game,
+  MatchHistoryResp,
+  SumDetail,
+  SummonerDetailInfo,
+} from "./types/MatchLcuTypes";
+import { queryRankPoint } from "./aboutSummoner";
 
 export const queryMatchHistory = async (
   puuid: string,
@@ -69,4 +75,35 @@ const fetchMatchHistory = async (
   const uri = `/lol-match-history/v1/products/lol/${puuid}/matches?begIndex=${begIndex}&endIndex=${endIndex}`;
   const matchList = await invoke<MatchHistoryResp>("get_match_list", { uri });
   return matchList.games.games;
+};
+
+export const getDrawerData = async (
+  summonerInfo: SummonerDetailInfo
+): Promise<SumDetail> => {
+  const rankList = await queryRankPoint(summonerInfo.puuid);
+  const listItemData = [
+    ["输出伤害", summonerInfo.totalDamageDealtToChampions],
+    ["物理伤害", summonerInfo.physicalDamageDealtToChampions],
+    ["魔法伤害", summonerInfo.magicDamageDealtToChampions],
+    ["真实伤害", summonerInfo.trueDamageDealtToChampions],
+    ["承受伤害", summonerInfo.totalDamageTaken],
+    ["击杀野怪", summonerInfo.neutralMinionsKilled],
+    ["击杀小兵", summonerInfo.totalMinionsKilled],
+    ["获得金钱", summonerInfo.goldEarned],
+    ["视野得分", summonerInfo.visionScore],
+    ["放置守卫", summonerInfo.wardsPlaced],
+  ];
+
+  return {
+    name: summonerInfo.name,
+    champImgUrl: `https://game.gtimg.cn/images/lol/act/img/champion/${summonerInfo.champImgUrl}`,
+    kda: `${summonerInfo.kills}-${summonerInfo.deaths}-${summonerInfo.assists}`,
+    champLevel: summonerInfo.champLevel,
+    listItemData: listItemData,
+    rankData: rankList,
+    runesList: summonerInfo.runesList,
+    spell1Id: summonerInfo.spell1Id,
+    spell2Id: summonerInfo.spell2Id,
+    summonerId: summonerInfo.accountId,
+  };
 };

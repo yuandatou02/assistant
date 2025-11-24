@@ -12,6 +12,7 @@
         :team-one="matchStore.participantsInfo.teamOne"
         :team-two="matchStore.participantsInfo.teamTwo"
         :summoner-id="matchStore.summonerId"
+        :is-game-in="false"
       />
     </div>
   </div>
