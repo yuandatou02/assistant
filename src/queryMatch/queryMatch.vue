@@ -13,6 +13,18 @@
                     content-style="padding:0 0 0 12px">
                     <matchErr v-if="matchStore.matchList === null" />
                     <matchMain v-else-if="matchStore.matchList.length !== 0" />
+                    <div v-else-if="!matchStore.matchLoading" class="w-full h-full flex justify-center items-center">
+                        <n-result size="large" status="404" title="召唤师数据为空" description="此页数不存在数据，请返回前一页">
+                            <template #footer>
+                                <n-button type="error">
+                                    生活总归带点荒谬
+                                </n-button>
+                            </template>
+                        </n-result>
+                    </div>
+                </n-card>
+                <n-card v-else class="shadow! h-full!" size="small" content-style="padding:0 0 0 12px">
+                    <loading-anime />
                 </n-card>
             </div>
         </div>
@@ -26,6 +38,7 @@ import queryHeader from './components/queryHeader.vue';
 import summonerInfoView from "./components/summonerInfoView.vue";
 import matchErr from "./components/matchErr.vue";
 import matchMain from "./components/matchMain.vue";
+import loadingAnime from "./components/loadingAnime.vue";
 import useMatchStore from "./store";
 
 const matchStore = useMatchStore();
