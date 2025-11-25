@@ -63,7 +63,7 @@ const message = useMessage();
 // 预选英雄
 const preselectChamp = async (champId: number) => {
     message.error('请在选择英雄阶段使用');
-}
+};
 
 onMounted(async () => {
     const response = await getRestRaintData(props.champId, props.lane, props.tier, props.is101, "135");

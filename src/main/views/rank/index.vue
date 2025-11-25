@@ -2,10 +2,11 @@
     <div class="mainContent">
         <n-card size="small" class="shadow!" content-style="padding-bottom: 0;">
             <n-space justify="space-between">
-                <n-dropdown :show-arrow="false" trigger="hover" :options="rankOptions">
+                <n-dropdown :show-arrow="false" trigger="hover" :options="rankOptions" @select="handleRankSelect">
                     <n-button secondary type="info">{{ is101 ? '国服排位英雄数据' : '韩服排位英雄数据' }}</n-button>
                 </n-dropdown>
-                <n-select v-model:value="tier" :show-checkmark="false" :options="is101 ? cnOptions : krOptions" />
+                <n-select v-model:value="tier" :show-checkmark="false" :options="is101 ? cnOptions : krOptions"
+                    @update:value="handleTierSelect" />
             </n-space>
             <n-space class="mt-2! mb-2.5!" justify="space-between">
                 <n-button v-for="(button, index) in ghostButtons" :key="index" :bordered="false"
@@ -35,6 +36,7 @@
                                     :intersection-observer-options="{
                                         root: '#image-scroll-container',
                                     }" :src="champ.imgUrl"
+                                    @click="initDesDrawer(true, champ.champId, champ.imgUrl, champ.tLevel)"
                                     fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png" />
                             </div>
                             <div class="grow">
@@ -72,7 +74,7 @@
 <script lang="ts" setup>
 import "./assistCommon.css";
 import type { ConfigRank } from "@/background/types";
-import { cnOptions, getLocalDateStr, krOptions, positionOptions, rankOptions } from "@/main/utils/rankUtils";
+import { cnOptions, getLocalDateStr, getPostion, krOptions, positionOptions, rankOptions } from "@/main/utils/rankUtils";
 import {
     NCard, NAvatar, NSpace, NSelect, NBackTop,
     NList, NListItem, NScrollbar, useMessage, NDropdown, NButton, NDrawer, arDZ
@@ -82,7 +84,7 @@ import champDetail from "./champDetail.vue";
 import { onMounted, ref, type Ref } from "vue";
 import type { ChampInfo } from "@/lcu/types/RankTypes";
 import { aliasToId, champDict } from "@/resources/champList";
-import { queryCNServe } from "@/lcu/abuoutRank";
+import { queryCNServe, queryKRServe } from "@/lcu/abuoutRank";
 
 const configRank: ConfigRank = JSON.parse(localStorage.getItem("configRank") as string);
 const is101 = ref(configRank.is101);
@@ -138,6 +140,13 @@ const handleSelect = (positon: string) => {
     });
 };
 
+const handleTierSelect = async (key: number) => {
+    champList.value = [];
+    tier.value = key;
+    configRank.tier = key;
+    localStorage.setItem("configRank", JSON.stringify(configRank));
+    await queryChampRankData();
+};
 
 // 获取不同服务器的数据
 const queryChampRankData = async (): Promise<boolean> => {
@@ -148,7 +157,16 @@ const queryChampRankData = async (): Promise<boolean> => {
             return true;
         }
     } else {
-        return false;
+        const laneKr = getPostion(lane.value);
+        const champInfo = await queryKRServe(configRank, tier.value, laneKr, "135");
+        if (champInfo) {
+            champList.value = champInfo;
+            return true;
+        } else {
+            message.error('韩服数据获取异常');
+            handleRankSelect();
+            return false;
+        }
     }
     return false;
 };
@@ -157,6 +175,26 @@ const queryChampRankData = async (): Promise<boolean> => {
 const quickSort = (factor: string) => {
     champList.value.sort((x: any, y: any) => {
         return factor == 'sortId' ? parseFloat(x[factor]) - parseFloat(y[factor]) : parseFloat(y[factor]) - parseFloat(x[factor]);
+    });
+};
+
+// 改变不同服务器的数据排行
+const handleRankSelect = () => {
+    isCheck.value = 1;
+    is101.value = !is101.value;
+    tier.value = is101.value ? 200 : 2;
+    champList.value = [];
+    queryChampRankData().then((isSuccess: boolean) => {
+        if (isSuccess) {
+            if (is101.value) {
+                message.success("国服数据获取成功!");
+            } else {
+                message.success("韩服数据获取成功!");
+            }
+            configRank.tier = tier.value;
+            configRank.is101 = is101.value;
+            localStorage.setItem("configRank", JSON.stringify(configRank));
+        }
     });
 };
 
