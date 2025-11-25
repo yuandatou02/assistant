@@ -30,7 +30,6 @@ const autoOptions = computed<SelectOption[]>(() => {
     if (inputValue.value === '' || inputValue.value === null) return [];
     const keyword = inputValue.value.toLowerCase();
     const renderList = keywordsList.filter((item) => item.keywords.toLowerCase().includes(keyword)).slice(0, 5);
-    console.log(renderList);
 
     return renderList.map((champ) => {
         return {
