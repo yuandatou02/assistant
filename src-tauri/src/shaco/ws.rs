@@ -31,7 +31,7 @@ impl LcuWebSocketClient {
             .build()
             .unwrap();
         let connector = Connector::NativeTls(tls);
-        let mut url = format!("wss:127.0.0.1:{}", port)
+        let mut url = format!("wss://127.0.0.1:{}", port)
             .into_client_request()
             .map_err(|_| LcuWebSocketError::AuthError)?;
         url.headers_mut().insert(

@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::fmt::{self, Display};
 
 use serde::{Deserialize, Deserializer, de};
 use serde_json::Value;
@@ -12,13 +12,13 @@ pub enum LcuSubscriptionType {
 }
 
 impl Display for LcuSubscriptionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             LcuSubscriptionType::AllJsonApiEvents => f.write_str("OnJsonApiEvent"),
-            LcuSubscriptionType::AllLcdsEvents => f.write_str("OnLcdsEvent"),
-            LcuSubscriptionType::JsonApiEvent(event) => f.write_str(&format!(
-                "OnJsonApiEvent:{}",
-                event.trim_start_matches('/').replace('/', "_")
+            LcuSubscriptionType::AllLcdsEvents => f.write_str("OnJsonApiEvent"),
+            LcuSubscriptionType::JsonApiEvent(s) => f.write_str(&format!(
+                "OnJsonApiEvent_{}",
+                s.trim_start_matches('/').replace('/', "_")
             )),
             LcuSubscriptionType::LcdsEvent(s) => f.write_str(&format!(
                 "OnLcdsEvent_{}",
