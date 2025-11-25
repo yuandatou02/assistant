@@ -4,7 +4,7 @@ mod matchlisthanle;
 use std::time::{Duration, Instant};
 
 use crate::{
-    lcu::matchlisthanle::MatchListDetails,
+    lcu::{listener::listen_client, matchlisthanle::MatchListDetails},
     shaco::{rest::RESTClient, utils::process_info::get_client_info},
 };
 use log::{error, info};
@@ -83,4 +83,11 @@ pub async fn get_match_list(uri: &str) -> Result<MatchListDetails, String> {
         .map_err(|e| format!("请求超时:{}", e))?;
 
     from_value::<MatchListDetails>(res).map_err(|e| format!("解析失败:{}", e))
+}
+
+#[tauri::command]
+pub async fn start_listener(app: AppHandle) {
+    tokio::spawn(async move {
+        listen_client(app).await;
+    });
 }

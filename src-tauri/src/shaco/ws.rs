@@ -1,4 +1,9 @@
-use futures_util::SinkExt;
+use std::{
+    pin::Pin,
+    task::{Context, Poll},
+};
+
+use futures_util::{SinkExt, Stream, StreamExt};
 use tauri::http::HeaderValue;
 use tokio::net::TcpStream;
 use tokio_tungstenite::{
@@ -6,7 +11,11 @@ use tokio_tungstenite::{
     tungstenite::{self, Message, client::IntoClientRequest},
 };
 
-use crate::shaco::{error::LcuWebSocketError, model::ws::LcuSubscriptionType, utils::process_info};
+use crate::shaco::{
+    error::LcuWebSocketError,
+    model::ws::{LcuEvent, LcuSubscriptionType},
+    utils::process_info,
+};
 
 #[derive(Debug)]
 pub struct LcuWebSocketClient(WebSocketStream<MaybeTlsStream<TcpStream>>);
@@ -52,5 +61,25 @@ impl LcuWebSocketClient {
                 }
                 _ => LcuWebSocketError::SendError,
             })
+    }
+}
+
+impl Stream for LcuWebSocketClient {
+    type Item = LcuEvent;
+
+    fn poll_next(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Option<Self::Item>> {
+        loop {
+            return match self.0.poll_next_unpin(cx) {
+                Poll::Pending => Poll::Pending,
+                Poll::Ready(Some(Ok(Message::Text(text)))) => {
+                    let Ok(event) = serde_json::from_str::<LcuEvent>(&text) else {
+                        continue;
+                    };
+                    Poll::Ready(Some(event))
+                }
+                Poll::Ready(Some(Ok(Message::Close(_))) | Some(Err(_)) | None) => Poll::Ready(None),
+                _ => continue,
+            };
+        }
     }
 }
