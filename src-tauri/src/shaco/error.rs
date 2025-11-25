@@ -30,3 +30,34 @@ impl Display for ProcessInfoError {
         }
     }
 }
+
+/// LCU WebSocket错误类型枚举
+/// 定义了与LCU(League Client Update)WebSocket通信过程中可能出现的各种错误情况
+#[derive(Debug, Clone)]
+pub enum LcuWebSocketError {
+    /// LCU服务不可用错误
+    /// 包含一个描述性字符串，提供更多关于错误的信息
+    LcuNotAvailable(String),
+    /// 认证错误
+    /// 表示在尝试连接LCU WebSocket时发生的认证失败情况
+    AuthError,
+    /// 发送错误
+    /// 表示在向LCU WebSocket发送消息时遇到的错误
+    SendError,
+    /// 连接断开错误
+    /// 包含一个描述性字符串，说明连接断开的具体原因
+    Disconnected(String),
+}
+
+impl Error for LcuWebSocketError {}
+
+impl Display for LcuWebSocketError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::LcuNotAvailable(s) => write!(f, "LCU API不可用: {}", s),
+            Self::AuthError => write!(f, "LCU认证失败"),
+            Self::SendError => write!(f, "LCU发送消息失败"),
+            Self::Disconnected(s) => write!(f, "LCU连接断开: {}", s),
+        }
+    }
+}
