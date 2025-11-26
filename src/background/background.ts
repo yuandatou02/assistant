@@ -6,6 +6,7 @@ import { GameFlow } from "./gameFlow";
 
 class Background {
   private gameFlow: GameFlow;
+  private preChampId: number;
 
   constructor() {
     // 创建主窗口
@@ -13,6 +14,7 @@ class Background {
     // 初始化配置文件
     configInit();
     this.gameFlow = new GameFlow();
+    this.preChampId = 0;
     this.initializeListeners();
   }
   // 初始化监听消息
@@ -54,6 +56,19 @@ class Background {
       case "ReadyCheck":
         this.gameFlow.autoAcceptGmae();
         this.gameFlow.writeGameInfo();
+        break;
+      case "ChampSelect":
+        this.preChampId = 0;
+        this.gameFlow.sendMsgToMain("ChampSelect");
+        break;
+      case "Matchmaking":
+        this.gameFlow.sendMsgToMain("Matchmaking");
+        break;
+      case "Lobby":
+        this.gameFlow.sendMsgToMain("Lobby");
+        break;
+      case "None":
+        this.gameFlow.sendMsgToMain("None");
         break;
     }
   }

@@ -5,6 +5,15 @@ import { emitTo } from "@tauri-apps/api/event";
 
 export class GameFlow {
   public mapId: number = 11;
+
+  public sendMsgToMain = (messageId: string, content: any = "") => {
+    window.Window.getByLabel("mainWindow").then((win) => {
+      if (win !== null) {
+        emitTo("mainWindow", "clientStatus", { messageId, content });
+      }
+    });
+  };
+
   // 发送给主窗口游戏启动事件
   public sendStartEvent = async () => {
     window.Window.getByLabel("mainWindow").then((win) => {
