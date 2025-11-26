@@ -51,6 +51,10 @@ class Background {
       case "ClientStarted":
         this.initAssistant();
         break;
+      case "ReadyCheck":
+        this.gameFlow.autoAcceptGmae();
+        this.gameFlow.writeGameInfo();
+        break;
     }
   }
 }

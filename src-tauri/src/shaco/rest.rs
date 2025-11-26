@@ -1,6 +1,7 @@
 use std::time::Duration;
 
 use reqwest::{Certificate, header};
+use serde::Serialize;
 use serde_json::Value;
 
 pub struct RESTClient {
@@ -48,6 +49,22 @@ impl RESTClient {
             .json()
             .await
             .or_else(|_| Ok(Value::Null))
+    }
+
+    pub async fn post<T: Serialize>(
+        &self,
+        endpoint: &str,
+        body: T,
+    ) -> Result<serde_json::Value, reqwest::Error> {
+        self.request_client
+            .post(format!("https://127.0.0.1:{}{}", self.port, endpoint))
+            .json(&body)
+            .send()
+            .await?
+            .error_for_status()?
+            .json()
+            .await
+            .or_else(|_| Ok(serde_json::Value::Null))
     }
 }
 

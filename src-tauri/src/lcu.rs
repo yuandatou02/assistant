@@ -52,10 +52,14 @@ pub fn listen_for_client_start(app: AppHandle) {
 }
 
 #[tauri::command]
-pub async fn invoke_lcu(method: &str, uri: &str, _body: &str) -> Result<Value, Value> {
+pub async fn invoke_lcu(method: &str, uri: &str, body: &str) -> Result<Value, Value> {
     let client = get_client()?;
     match method.to_lowercase().as_str() {
         "get" => client.get(uri).await.map_err(|_| Value::Null),
+        "post" => {
+            let parsed = serde_json::from_str::<Value>(body).unwrap_or(Value::Null);
+            client.post(uri, parsed).await.map_err(|_| Value::Null)
+        }
         _ => Ok(Value::Null),
     }
 }
