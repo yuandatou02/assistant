@@ -15,7 +15,8 @@ import { onMounted, ref } from 'vue';
 import dashboard from './components/dashboard.vue';
 import { useRouter } from 'vue-router';
 import navigation from './components/navigation.vue';
-import { useMessage, MessageReactive } from "naive-ui";
+import { useMessage } from "naive-ui";
+import { listen } from '@tauri-apps/api/event';
 
 const router = useRouter();
 const curPos = ref(0);
@@ -27,6 +28,12 @@ onMounted(() => {
 
 class GameState {
     private curFlow = "None";
+
+    // 改变页面
+    public changPage = (id: string, page: string, index: number) => {
+        this.curFlow = id;
+        this.navigateToPage(page, index);
+    };
 
     // 改变底部图标
     public navigateToPage = (route: string, index: number) => {
@@ -50,7 +57,35 @@ class GameState {
                 return true;
         }
     };
+
+    public handleChampSelect = async (id: string) => {
+        this.changPage(id, "teammate", 2);
+    };
+    // 获取队友数据
+    public handleFriendInfo = () => {
+        const queueId = this.queryGameInfo();
+    };
+    // 获取GameInfo
+    private queryGameInfo = () => {
+        const gameInfo = localStorage.getItem("gameInfo");
+        if (gameInfo === null) {
+            localStorage.setItem('gameInfo',
+                String(JSON.stringify({
+                    queueId: 420,
+                    mapId: 11
+                })
+                ));
+            return 420;
+        } else {
+            return JSON.parse(gameInfo).queueId;
+        }
+    };
 }
 const gameState = new GameState();
-
+listen<{ messageId: string, content: string; }>("clientStatus", (event) => {
+    switch (event.payload.messageId) {
+        case 'ChampSelect':
+            return gameState.handleChampSelect('ChampSelect');
+    }
+});
 </script>
