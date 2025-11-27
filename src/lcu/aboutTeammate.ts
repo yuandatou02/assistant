@@ -22,6 +22,7 @@ export const queryAllSummonerId = async (isListenSession: boolean) => {
                   "/lol-champ-select/v1/current-champion",
               )
             : 0;
+    console.log(getChampId);
     const myTeam: MyTeamObject[] = matchSession.myTeam;
     if (myTeam) {
         const summonerIdList = [

@@ -8,7 +8,14 @@ import { invoke } from "@tauri-apps/api/core";
  * @param {string} [body=''] - (可选) 请求体，通常用于 'POST' 或 'PUT' 请求。默认为空字符串。
  * @returns {Promise<T | null>} 一个 Promise，成功时 resolve 为 LCU API 返回的数据 (类型为 T)，或在调用失败时 resolve 为 null。
  */
-export const invokeLcu = <T>(method: string, uri: string, body: string = ''): Promise<T | null> => {
-  return invoke<T | null>("invoke_lcu", { method, uri, body })
-    .catch(() => null);
-}
+export const invokeLcu = async <T>(
+    method: string,
+    uri: string,
+    body: string = "",
+): Promise<T | null> => {
+    try {
+        return await invoke<T | null>("invoke_lcu", { method, uri, body });
+    } catch {
+        return null;
+    }
+};

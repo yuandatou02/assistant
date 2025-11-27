@@ -15,6 +15,7 @@ import { onMounted, ref } from "vue";
 import dashboard from "./components/dashboard.vue";
 import { useRouter } from "vue-router";
 import navigation from "./components/navigation.vue";
+import useRuneStore from "./store/rune";
 import { useMessage } from "naive-ui";
 import { listen } from "@tauri-apps/api/event";
 import { queryFriendInfo } from "@/lcu/aboutTeammate";
@@ -23,6 +24,7 @@ import { invoke } from "@tauri-apps/api/core";
 const router = useRouter();
 const curPos = ref(0);
 const message = useMessage();
+const runeStore = useRuneStore();
 
 onMounted(() => {
     router.push({ name: "home" });
@@ -31,6 +33,11 @@ onMounted(() => {
 class GameState {
     private curFlow = "None";
     public islistenSession = false;
+
+    // 重置Store数据
+    public resetStore = () => {
+        runeStore.$reset();
+    };
 
     // 改变页面
     public changPage = (id: string, page: string, index: number) => {
@@ -69,9 +76,9 @@ class GameState {
                 return true;
         }
     };
-
+    // 处理ChampSelect状态
     public handleChampSelect = async (id: string) => {
-        console.log("-----");
+        this.resetStore();
         //  this.changPage(id, "teammate", 2);
         this.handleFriendInfo();
     };
@@ -83,14 +90,27 @@ class GameState {
             if (!this.islistenSession) {
                 this.islistenSession = true;
                 invoke("start_champ_select");
+                console.log("summonerInfo:", summonerInfo);
                 if (summonerInfo.champId !== 0) {
-                    //TODO: 配置符文
-                    message.success("配置符文");
+                    this.handleChampion('Champion', summonerInfo.champId);
                 }
             }
-            const summonerIdList = summonerInfo.list.map(
-                (summoner) => summoner.summonerId,
-            );
+        });
+    };
+
+    // 处理Champion状态
+    public handleChampion = (id: string, content: any) => {
+        if (content === 0) {
+            return;
+        }
+        runeStore.initStore(content).then((res) => {
+            if (res) {
+                message.error('当前英雄暂无符文数据');
+                return;
+            } else {
+
+                // this.changeState(id, 'rune', 3);
+            }
         });
     };
     // 获取GameInfo
@@ -113,10 +133,9 @@ class GameState {
     };
 }
 const gameState = new GameState();
-listen<{ messageId: string; content: string }>("clientStatus", (event) => {
+listen<{ messageId: string; content: string; }>("clientStatus", (event) => {
     switch (event.payload.messageId) {
         case "ChampSelect":
-            console.log("+++++++");
             return gameState.handleChampSelect("ChampSelect");
     }
 });
