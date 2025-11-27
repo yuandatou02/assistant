@@ -2,7 +2,8 @@ mod lcu;
 mod shaco;
 
 use crate::lcu::{
-    get_match_list, invoke_lcu, is_lol_client, listen_for_client_start, start_game, start_listener,
+    get_match_list, invoke_lcu, is_lol_client, listen_for_client_start, start_champ_select,
+    start_game, start_listener,
 };
 
 #[tokio::main]
@@ -26,7 +27,8 @@ pub async fn run() {
             start_game,
             is_lol_client,
             get_match_list,
-            start_listener
+            start_listener,
+            start_champ_select
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

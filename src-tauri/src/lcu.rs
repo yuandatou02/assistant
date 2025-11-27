@@ -4,7 +4,7 @@ mod matchlisthanle;
 use std::time::{Duration, Instant};
 
 use crate::{
-    lcu::{listener::listen_client, matchlisthanle::MatchListDetails},
+    lcu::{listener::{listen_champ_select, listen_client}, matchlisthanle::MatchListDetails},
     shaco::{rest::RESTClient, utils::process_info::get_client_info},
 };
 use log::{error, info};
@@ -93,5 +93,12 @@ pub async fn get_match_list(uri: &str) -> Result<MatchListDetails, String> {
 pub async fn start_listener(app: AppHandle) {
     tokio::spawn(async move {
         listen_client(app).await;
+    });
+}
+
+#[tauri::command]
+pub async fn start_champ_select(app: AppHandle) {
+    tokio::spawn(async move{
+        listen_champ_select(app).await;
     });
 }
