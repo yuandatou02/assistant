@@ -1,15 +1,17 @@
 {
   "name": "assistant",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
+    "fmt": "oxfmt .",
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.1",
+    "@tauri-apps/api": "^2.10.1",
     "tailwindcss": "^4.2.1",
     "vue": "^3.5.25"
   },
@@ -18,8 +20,11 @@
     "@types/node": "^24.10.1",
     "@vitejs/plugin-vue": "^6.0.2",
     "@vue/tsconfig": "^0.8.1",
+    "oxfmt": "^0.36.0",
+    "pinia": "^3.0.4",
     "typescript": "~5.9.3",
     "vite": "^8.0.0-beta.13",
+    "vue-router": "^5.0.3",
     "vue-tsc": "^3.1.5"
   },
   "overrides": {
