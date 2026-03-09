@@ -20,6 +20,7 @@
     "@types/node": "^24.10.1",
     "@vitejs/plugin-vue": "^6.0.2",
     "@vue/tsconfig": "^0.8.1",
+    "naive-ui": "^2.44.1",
     "oxfmt": "^0.36.0",
     "pinia": "^3.0.4",
     "typescript": "~5.9.3",
