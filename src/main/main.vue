@@ -6,16 +6,16 @@
   >
     <n-dialog-provider>
       <n-message-provider>
-        <frank/>
+        <frank />
       </n-message-provider>
     </n-dialog-provider>
   </n-config-provider>
 </template>
 
 <script lang="ts" setup>
-import {darkTheme, NConfigProvider, NDialogProvider, NMessageProvider, zhCN} from "naive-ui";
+import { darkTheme, NConfigProvider, NDialogProvider, NMessageProvider, zhCN } from "naive-ui";
 import { themeOverrides } from "@/main/utils/theme.ts";
-import Frank from "./index.vue"
+import Frank from "./index.vue";
 
 const theme = localStorage.getItem("theme") || "light";
 if (theme === "dark") {
