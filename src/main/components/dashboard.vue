@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { h, ref } from "vue";
+import { h, onMounted, ref } from "vue";
 import { NButton, NCheckbox, NDrawer, NIcon, NSpace, useDialog } from "naive-ui";
 import { CircleMinus, Settings, CircleX, Bulb } from "@vicons/tabler";
 import Setting from "@/main/components/setting.vue";
@@ -48,6 +48,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { exit } from "@tauri-apps/plugin-process";
 import type { ConfigSettingTypes } from "@/background/types";
 import { invoke } from "@tauri-apps/api/core";
+import { Notice } from "@/main/utils/notice.ts";
 
 const isShowNoticeIcon = ref(false);
 const isShowDrawer = ref(false);
@@ -56,10 +57,7 @@ const { configSetting } = defineProps<{
   configSetting: ConfigSettingTypes;
 }>();
 const shouldCloseLOL = ref(configSetting.shouldCloseLOL);
-
-const showDialog = () => {
-  // notice.showDialog();
-};
+const notice = new Notice();
 
 const handleMinimize = async () => {
   await getCurrentWindow().minimize();
@@ -111,6 +109,18 @@ const handleConfirm = () => {
     },
     onNegativeClick: () => {},
   });
+};
+
+onMounted(() => {
+  notice.init().then((v) => {
+    if (v) {
+      isShowNoticeIcon.value = true;
+    }
+  });
+});
+
+const showDialog = () => {
+  notice.showDialog();
 };
 </script>
 
