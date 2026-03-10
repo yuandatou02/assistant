@@ -1,6 +1,6 @@
 mod lcu;
 
-use lcu::launch_lol;
+use lcu::{get_lol_region, launch_lol, listen_for_client_start};
 
 #[tokio::main]
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -16,7 +16,11 @@ pub async fn run() {
             }
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![launch_lol])
+        .invoke_handler(tauri::generate_handler![
+            launch_lol,
+            get_lol_region,
+            listen_for_client_start
+        ])
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_shell::init())
