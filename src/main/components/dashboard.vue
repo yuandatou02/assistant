@@ -28,13 +28,7 @@
       </n-button>
     </div>
   </header>
-  <n-drawer
-    class="rounded-t-lg!"
-    v-model:show="isShowDrawer"
-    :placement="'bottom'"
-    :auto-focus="false"
-    height="600"
-  >
+  <n-drawer class="rounded-t-lg!" v-model:show="isShowDrawer" :placement="'bottom'" :auto-focus="false" height="580">
     <setting />
   </n-drawer>
 </template>
@@ -82,9 +76,7 @@ const handleConfirm = () => {
                 "onUpdate:checked": (val) => {
                   shouldCloseLOL.value = val;
 
-                  const config: ConfigSettingTypes = JSON.parse(
-                    localStorage.getItem("configSetting") as string,
-                  );
+                  const config: ConfigSettingTypes = JSON.parse(localStorage.getItem("configSetting") as string);
                   config.shouldCloseLOL = val;
 
                   localStorage.setItem("configSetting", JSON.stringify(config));

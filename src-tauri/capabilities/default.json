@@ -10,6 +10,32 @@
     "core:window:allow-show",
     "core:window:allow-start-dragging",
     "core:window:allow-minimize",
-    "core:window:allow-close"
+    "core:window:allow-close",
+    "process:allow-restart",
+    "shell:allow-open",
+    "http:default",
+    {
+      "identifier": "http:default",
+      "allow": [
+        {
+          "url": "https://*.myqcloud.com"
+        },
+        {
+          "url": "https://*.qq.com"
+        },
+        {
+          "url": "https://*.lol.qq.com:21019"
+        },
+        {
+          "url": "https://lol.ps"
+        },
+        {
+          "url": "http://121.40.58.64:8412"
+        },
+        {
+          "url": "https://game.gtimg.cn"
+        }
+      ]
+    }
   ]
 }
