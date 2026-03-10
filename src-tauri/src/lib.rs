@@ -1,5 +1,10 @@
+mod lcu;
+
+use lcu::launch_lol;
+
+#[tokio::main]
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub fn run() {
+pub async fn run() {
     tauri::Builder::default()
         .setup(|app| {
             if cfg!(debug_assertions) {
@@ -11,6 +16,7 @@ pub fn run() {
             }
             Ok(())
         })
+        .invoke_handler(tauri::generate_handler![launch_lol])
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_shell::init())
