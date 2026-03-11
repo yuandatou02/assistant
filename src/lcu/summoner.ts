@@ -10,12 +10,16 @@ import { invoke } from "@tauri-apps/api/core";
  * @param summonerId - 可选的召唤师 ID，支持数字或字符串类型。不传该参数时查询当前登录召唤师
  * @returns Promise<SummonerInfo> - 返回包含召唤师详细信息的 Promise 对象
  */
-export const querySummonerInfo = async (summonerId?: number | string): Promise<SummonerInfo> => {
+export const querySummonerInfo = async (summonerId?: number | string): Promise<SummonerInfo | null> => {
   const endpoint = summonerId ? `/lol-summoner/v1/summoners/${summonerId}` : "/lol-summoner/v1/current-summoner";
-  return await invoke<SummonerInfo>("get_summoner_info", { endpoint });
+  return await invoke<SummonerInfo | null>("get_summoner_info", { endpoint });
 };
 
-// // 返回首页最终需要的数据
-// export const getCurrentSummonerAllInfo = async () => {
-//   const summonerInfo = await querySummonerInfo();
-// };
+// 返回首页最终需要的数据
+export const getCurrentSummonerAllInfo = async () => {
+  const summonerInfo = await querySummonerInfo();
+  if (summonerInfo === null) {
+    return null;
+  }
+  return { summonerInfo };
+};

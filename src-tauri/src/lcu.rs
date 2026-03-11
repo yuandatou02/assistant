@@ -1,8 +1,10 @@
 mod client;
 mod error;
+mod types;
 mod utils;
 
 use crate::lcu::client::RESTClient;
+use crate::lcu::types::summoner::{LcuSummonerInfo, SummonerInfo};
 use crate::lcu::utils::global_key::init_global_keyboard;
 use crate::lcu::utils::process_info::get_auth_info;
 use anyhow::Context;
@@ -20,8 +22,63 @@ fn get_client() -> anyhow::Result<&'static RESTClient> {
     REST_CLIENT.get().context("REST_CLIENT 没有初始化")
 }
 
-pub fn get_summoner_info(endpoint: &str) {
-    todo!("没有完成")
+/// 获取召唤师信息
+///
+/// 通过 LCU API 获取指定端点的召唤师详细信息，包括基本信息、等级、经验值等。
+/// 该函数将原始 API 响应转换为前端所需的 SummonerInfo 格式。
+///
+/// # Parameters
+/// * `endpoint` - LCU API 端点路径，用于获取召唤师信息的完整 URL 路径
+///
+/// # Returns
+/// * `Ok(SummonerInfo)` - 成功时返回召唤师信息对象，包含：
+///   - `privacy`: 隐私设置信息
+///   - `puuid`: 玩家唯一标识符
+///   - `tag_line`: 玩家标签行（可选）
+///   - `name`: 游戏内显示名称
+///   - `current_id`: 当前召唤师 ID
+///   - `lv`: 格式化后的等级字符串（如 "Lv 150"）
+///   - `xp`: 当前等级经验值百分比（0-100）
+///   - `img_url`: 玩家头像图片 URL 地址
+/// * `Err(Value::Null)` - 失败时返回 Null 值，可能原因：
+///   - 无法获取客户端实例
+///   - API 请求失败
+///   - JSON 反序列化失败
+///
+/// # Errors
+/// 当出现以下情况时返回错误：
+/// - REST_CLIENT 未初始化
+/// - HTTP 请求失败
+/// - 响应数据格式不正确
+#[tauri::command]
+pub async fn get_summoner_info(endpoint: &str) -> Result<SummonerInfo, Value> {
+    // 获取 REST 客户端实例
+    let client = get_client().map_err(|_| Value::Null)?;
+
+    // 向指定端点发送 GET 请求获取原始召唤师数据
+    let summoner_info = client.get(endpoint).await.map_err(|_| Value::Null)?;
+
+    // 将 JSON 值反序列化为 LcuSummonerInfo 结构体
+    let summoner_info = serde_json::from_value::<LcuSummonerInfo>(summoner_info).map_err(|e| {
+        error!("JSON 反序列化失败：{}", e);
+        Value::Null
+    })?;
+
+    // 构建并返回格式化后的召唤师信息对象
+    Ok(SummonerInfo {
+        privacy: summoner_info.privacy,
+        puuid: summoner_info.puuid,
+        tag_line: Some(summoner_info.tag_line),
+        name: summoner_info.game_name,
+        current_id: summoner_info.summoner_id,
+        lv: format!("Lv {}", summoner_info.summoner_level),
+        xp: (summoner_info.xp_since_last_level as f64 / summoner_info.xp_until_next_level as f64)
+            * 100.0,
+        img_url: format!(
+            "https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/{}.png",
+            summoner_info.profile_icon_id
+        ),
+    })
 }
 
 /// 初始化全局键盘监听器
@@ -74,7 +131,7 @@ pub async fn get_client_path() -> Result<String, Value> {
     })?;
 
     // 替换为自定义客户端路径
-    let path = path.replace("LeagueClient", r"TCLS\\client.exe");
+    let path = path.replace("LeagueClient", r"TCLS\client.exe");
     Ok(path)
 }
 
@@ -109,21 +166,16 @@ pub fn listen_for_client_start(app: AppHandle) {
             if let Ok(value) = get_auth_info() {
                 // 初始化全局 REST_CLIENT 实例
                 let _ = REST_CLIENT
-                    .set(RESTClient::new(value.token, value.port).expect("创建 RESTClient 失败"))
-                    .map_err(|_| "REST_CLIENT 已经初始化过了");
+                    .set(RESTClient::new(value.token, value.port).expect("创建 RESTClient 失败"));
 
                 // 向背景页面发送客户端已启动的状态事件
                 app.emit_to("background", "client_status", "ClientStarted")
                     .expect("sent background error");
                 break;
             }
-
             // 等待一段时间后再次检查
             tokio::time::sleep(Duration::from_secs(3)).await;
         }
-
-        // 记录超时错误日志
-        error!("客户端启动超时，未能获取信息。");
     });
 }
 

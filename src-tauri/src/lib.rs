@@ -1,6 +1,9 @@
 mod lcu;
 
-use lcu::{get_client_path, get_lol_region, init_keyboard, launch_lol, listen_for_client_start};
+use lcu::{
+    get_client_path, get_lol_region, get_summoner_info, init_keyboard, launch_lol,
+    listen_for_client_start,
+};
 
 #[tokio::main]
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -21,7 +24,8 @@ pub async fn run() {
             get_lol_region,
             listen_for_client_start,
             get_client_path,
-            init_keyboard
+            init_keyboard,
+            get_summoner_info
         ])
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_http::init())

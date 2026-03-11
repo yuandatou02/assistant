@@ -58,6 +58,7 @@ export const configInit = () => {
 
 export const getClientPath = async () => {
   let path = await invoke<string | null>("get_client_path");
+  console.log("get_client_path: ", path);
   if (path) {
     localStorage.setItem("clientPath", path);
     return true;

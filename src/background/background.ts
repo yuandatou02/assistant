@@ -7,10 +7,10 @@ import { GameFlow } from "@/background/gameFlow.ts";
 class Background {
   private gameFlow!: GameFlow;
   init = async () => {
+    this.gameFlow = new GameFlow();
     await createMainWindows();
     configInit();
     this.initializeListeners();
-    this.gameFlow = new GameFlow();
   };
 
   private initializeListeners = () => {
@@ -36,12 +36,13 @@ class Background {
 
     await invoke("init_keyboard");
     const lcuSuccess = setInterval(async () => {
+      debugger;
       const isGetPath = await getClientPath();
       if (isGetPath) {
         clearInterval(lcuSuccess);
         setTimeout(() => {
           this.gameFlow.sendStartEvent();
-          invoke("start_listener");
+          // invoke("start_listener");
         }, 500);
       }
 

@@ -40,7 +40,7 @@ pub(crate) fn build_request_client(auth_token: Option<String>) -> reqwest::Clien
     reqwest::ClientBuilder::new()
         .add_root_certificate(cert)
         .default_headers(headers)
-        .timeout(Duration::from_secs(3))
+        .timeout(Duration::from_secs(5))
         .build()
         .expect("创建请求客户端失败")
 }

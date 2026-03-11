@@ -1,7 +1,7 @@
 <template>
   <n-config-provider :locale="zhCN" :theme-overrides="themeOverrides" :theme="theme === 'dark' ? darkTheme : null">
     <n-dialog-provider>
-      <n-message-provider>
+      <n-message-provider :placement="'bottom'">
         <frank />
       </n-message-provider>
     </n-dialog-provider>
