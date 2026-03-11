@@ -5,7 +5,9 @@
         <n-list-item class="pt-0!">
           <div class="gap-x-5 flex justify-between items-center">
             <n-tag :bordered="false">鼓励开发</n-tag>
-            <n-button class="w-51.5!" size="small" secondary :bordered="false" type="warning" @click.prevent="sponsor = true"> 赞助 Frank 英雄联盟助手 </n-button>
+            <n-button class="w-51.5!" size="small" secondary :bordered="false" type="warning" @click.prevent="sponsor = true">
+              赞助 Frank 英雄联盟助手
+            </n-button>
           </div>
         </n-list-item>
         <!--        切换主题-->
@@ -92,7 +94,9 @@
             </div>
           </div>
           <n-tag class="mt-1.5 w-full justify-center" :disabled="true" :bordered="false" size="small"> 游戏内显示战绩窗口，显示|隐藏 SHIFT+TAB</n-tag>
-          <n-tag class="mt-1.5 w-full justify-center" :disabled="config.isGameInWindow" :bordered="false" size="small"> 关闭自动打开后，进入游戏需点击右下角图标</n-tag>
+          <n-tag class="mt-1.5 w-full justify-center" :disabled="config.isGameInWindow" :bordered="false" size="small">
+            关闭自动打开后，进入游戏需点击右下角图标</n-tag
+          >
         </n-list-item>
         <!--        秒接对局-->
         <n-list-item>
@@ -100,7 +104,9 @@
             <n-tag :bordered="false">秒接对局</n-tag>
             <n-slider v-model:value="config.autoAccept" :step="10" @update:value="saveConfig" />
           </div>
-          <n-tag class="mt-1.5 w-full justify-center" :disabled="true" :bordered="false" size="small">数值: [ {{ "<" }}50 关闭 ] [ =50 开启 ] [ {{ "=" }}60 延迟两秒 ]</n-tag>
+          <n-tag class="mt-1.5 w-full justify-center" :disabled="true" :bordered="false" size="small"
+            >数值: [ {{ "<" }}50 关闭 ] [ =50 开启 ] [ {{ "=" }}60 延迟两秒 ]</n-tag
+          >
         </n-list-item>
         <n-list-item style="padding-bottom: 0">
           <div class="flex justify-between items-center">
@@ -118,7 +124,21 @@
 </template>
 
 <script setup lang="ts">
-import { NButton, NDrawerContent, NList, NListItem, NModal, NRadio, NScrollbar, NSelect, NSlider, NSwitch, NTag, type SelectOption, useDialog } from "naive-ui";
+import {
+  NButton,
+  NDrawerContent,
+  NList,
+  NListItem,
+  NModal,
+  NRadio,
+  NScrollbar,
+  NSelect,
+  NSlider,
+  NSwitch,
+  NTag,
+  type SelectOption,
+  useDialog,
+} from "naive-ui";
 import { type Ref, ref } from "vue";
 import { relaunch } from "@tauri-apps/plugin-process";
 import type { ConfigSettingTypes } from "@/background/types";

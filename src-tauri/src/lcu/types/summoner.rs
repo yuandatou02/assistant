@@ -79,7 +79,7 @@ pub struct SummonerInfo {
 
     pub lv: String,
 
-    pub xp: f64,
+    pub xp: i32,
 
     pub puuid: String,
 

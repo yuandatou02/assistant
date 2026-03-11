@@ -72,8 +72,8 @@ pub async fn get_summoner_info(endpoint: &str) -> Result<SummonerInfo, Value> {
         name: summoner_info.game_name,
         current_id: summoner_info.summoner_id,
         lv: format!("Lv {}", summoner_info.summoner_level),
-        xp: (summoner_info.xp_since_last_level as f64 / summoner_info.xp_until_next_level as f64)
-            * 100.0,
+        xp: ((summoner_info.xp_since_last_level as f64 / summoner_info.xp_until_next_level as f64)
+            * 100.0) as i32,
         img_url: format!(
             "https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/{}.png",
             summoner_info.profile_icon_id
