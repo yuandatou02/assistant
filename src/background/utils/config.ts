@@ -1,4 +1,5 @@
 import type { ConfigRank, ConfigSettingTypes } from "@/background/types";
+import { invoke } from "@tauri-apps/api/core";
 
 const configSetting: ConfigSettingTypes = {
   autoPickChampion: {
@@ -53,4 +54,13 @@ export const configInit = () => {
     addConfig("configSetting", configSetting);
     addConfig("configRank", configRank);
   }
+};
+
+export const getClientPath = async () => {
+  let path = await invoke<string | null>("get_client_path");
+  if (path) {
+    localStorage.setItem("clientPath", path);
+    return true;
+  }
+  return false;
 };

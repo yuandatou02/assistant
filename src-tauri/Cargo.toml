@@ -33,3 +33,4 @@ base64 = "0.22.1"
 once_cell = "1.21.3"
 reqwest = { version = "0.13.2", features = ["json"] }
 anyhow = "1.0.102"
+rdev = "0.5.3"

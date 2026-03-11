@@ -3,10 +3,12 @@ mod error;
 mod utils;
 
 use crate::lcu::client::RESTClient;
+use crate::lcu::utils::global_key::init_global_keyboard;
 use crate::lcu::utils::process_info::get_auth_info;
+use anyhow::Context;
 use log::error;
-use log::kv::Value;
 use once_cell::sync::OnceCell;
+use serde_json::Value;
 use std::time::{Duration, Instant};
 use tauri::{AppHandle, Emitter};
 
@@ -14,14 +16,66 @@ use tauri::{AppHandle, Emitter};
 static REST_CLIENT: OnceCell<RESTClient> = OnceCell::new();
 
 // 获取 REST_CLIENT 的函数
-fn get_client() -> Result<&'static RESTClient, String> {
-    REST_CLIENT
-        .get()
-        .ok_or_else(|| "REST_CLIENT 没有初始化".to_string())
+fn get_client() -> anyhow::Result<&'static RESTClient> {
+    REST_CLIENT.get().context("REST_CLIENT 没有初始化")
 }
 
 pub fn get_summoner_info(endpoint: &str) {
     todo!("没有完成")
+}
+
+/// 初始化全局键盘监听器
+///
+/// 在后台异步任务中启动全局键盘监听，用于捕获和处理全局键盘事件。
+///
+/// # Parameters
+/// * `app` - Tauri 应用句柄，用于访问应用资源和窗口管理
+///
+/// # Returns
+/// 无返回值
+#[tauri::command]
+pub async fn init_keyboard(app: AppHandle) {
+    // 在独立的 Tokio 任务中运行全局键盘监听器
+    tokio::spawn(async move {
+        init_global_keyboard(app);
+    });
+}
+
+/// 获取客户端安装路径
+///
+/// 通过 LCU API 获取 League Client 的安装目录，并将默认路径替换为
+/// 自定义的 TCLS 客户端路径。
+///
+/// # Returns
+/// * `Result<String, Value>` - 成功时返回客户端可执行文件的完整路径字符串
+///   - 路径格式：`TCLS\\client.exe`（替换了默认的 LeagueClient 路径）
+///   - 失败时返回 `Value::Null`
+///
+/// # Errors
+/// 当出现以下情况时返回错误：
+/// - 无法获取客户端实例
+/// - API 请求失败
+/// - JSON 反序列化失败
+#[tauri::command]
+pub async fn get_client_path() -> Result<String, Value> {
+    // 获取客户端实例
+    let client = get_client().map_err(|_| Value::Null)?;
+
+    // 调用 LCU API 获取安装目录路径
+    let path = client
+        .get("/data-store/v1/install-dir")
+        .await
+        .map_err(|_| Value::Null)?;
+
+    // 将响应值反序列化为字符串
+    let path = serde_json::from_value::<String>(path).map_err(|e| {
+        error!("JSON 反序列化失败：{}", e);
+        Value::Null
+    })?;
+
+    // 替换为自定义客户端路径
+    let path = path.replace("LeagueClient", r"TCLS\\client.exe");
+    Ok(path)
 }
 
 /// 监听英雄联盟客户端启动事件
