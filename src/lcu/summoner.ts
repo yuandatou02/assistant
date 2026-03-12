@@ -15,11 +15,13 @@ export const querySummonerInfo = async (summonerId?: number | string): Promise<S
   return await invoke<SummonerInfo | null>("get_summoner_info", { endpoint });
 };
 
+export const queryRankPoint = async (puuid?: string): Promise<string[]> => {
+  const endpoint = puuid ? `/lol-ranked/v1/ranked-stats/${puuid}` : "/lol-ranked/v1/current-ranked-stats";
+  return await invoke<string[]>("get_rank_point", { endpoint });
+};
+
 // 返回首页最终需要的数据
 export const getCurrentSummonerAllInfo = async () => {
-  const summonerInfo = await querySummonerInfo();
-  if (summonerInfo === null) {
-    return null;
-  }
-  return { summonerInfo };
+  const [summonerInfo, rankList] = await Promise.all([querySummonerInfo(), queryRankPoint()]);
+  return { summonerInfo, rankList };
 };

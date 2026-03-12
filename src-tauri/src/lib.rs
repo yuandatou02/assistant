@@ -1,7 +1,7 @@
 mod lcu;
 
 use lcu::{
-    get_client_path, get_lol_region, get_summoner_info, init_keyboard, launch_lol,
+    get_client_path, get_lol_region, get_rank_point, get_summoner_info, init_keyboard, launch_lol,
     listen_for_client_start,
 };
 
@@ -25,7 +25,8 @@ pub async fn run() {
             listen_for_client_start,
             get_client_path,
             init_keyboard,
-            get_summoner_info
+            get_summoner_info,
+            get_rank_point
         ])
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_http::init())

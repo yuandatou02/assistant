@@ -4,22 +4,92 @@ mod types;
 mod utils;
 
 use crate::lcu::client::RESTClient;
+use crate::lcu::types::rank::RankedStats;
 use crate::lcu::types::summoner::{LcuSummonerInfo, SummonerInfo};
 use crate::lcu::utils::global_key::init_global_keyboard;
 use crate::lcu::utils::process_info::get_auth_info;
+use crate::lcu::utils::tools::generate_rank_string;
 use anyhow::Context;
 use log::error;
-use once_cell::sync::OnceCell;
+use once_cell::sync::{Lazy, OnceCell};
 use serde_json::Value;
 use std::time::{Duration, Instant};
 use tauri::{AppHandle, Emitter};
 
 // 定义全局的REST客户端
 static REST_CLIENT: OnceCell<RESTClient> = OnceCell::new();
+static FAIL_RESULT: Lazy<[String; 3]> = Lazy::new(|| {
+    [
+        "未定级".to_string(),
+        "未定级".to_string(),
+        "未定级".to_string(),
+    ]
+});
 
 // 获取 REST_CLIENT 的函数
 fn get_client() -> anyhow::Result<&'static RESTClient> {
     REST_CLIENT.get().context("REST_CLIENT 没有初始化")
+}
+
+/// 获取排位赛积分信息
+///
+/// 通过 LCU API 获取指定端点的排位赛统计数据，包括单双排、灵活组排和云顶之弈的段位信息。
+/// 该函数将原始 API 响应转换为前端所需的三个段位字符串格式。
+///
+/// # Parameters
+/// * `endpoint` - LCU API 端点路径，用于获取排位赛信息的完整 URL 路径
+///
+/// # Returns
+/// * `Ok([String; 3])` - 成功时返回包含三个段位字符串的数组：
+///   - 索引 0: 单双排 (RANKED_SOLO_5x5) 段位信息
+///   - 索引 1: 灵活组排 (RANKED_FLEX_SR) 段位信息
+///   - 索引 2: 云顶之弈 (RANKED_TFT) 段位信息
+///   每个段位字符串包含段位名称、胜点和胜率等信息
+/// * `Err([String; 3])` - 失败时返回包含三个"未定级"字符串的错误数组
+///
+/// # Errors
+/// 当出现以下情况时返回错误：
+/// - REST_CLIENT 未初始化
+/// - HTTP 请求失败
+/// - JSON 反序列化失败
+/// - 队列数据为空
+#[tauri::command]
+pub async fn get_rank_point(endpoint: &str) -> Result<[String; 3], [String; 3]> {
+    // 获取 REST 客户端实例并发起 API 请求
+    let client = get_client().map_err(|_| FAIL_RESULT.clone())?;
+    let rank_point = client
+        .get(endpoint)
+        .await
+        .map_err(|_| FAIL_RESULT.clone())?;
+
+    // 将响应数据反序列化为 RankedStats 结构体
+    let rank_point = serde_json::from_value::<RankedStats>(rank_point).map_err(|e| {
+        error!("JSON 反序列化失败：{}", e);
+        FAIL_RESULT.clone()
+    })?;
+
+    // 提取队列列表并检查是否为空
+    let queue = rank_point.queues;
+    if queue.is_empty() {
+        return Ok(FAIL_RESULT.clone());
+    }
+
+    // 查找三种不同队列类型的排位数据
+    let rank_sole = queue
+        .iter()
+        .find(|item| item.queue_type == "RANKED_SOLO_5x5");
+    let rank_flex = queue
+        .iter()
+        .find(|item| item.queue_type == "RANKED_FLEX_SR");
+    let rank_tft = queue.iter().find(|item| item.queue_type == "RANKED_TFT");
+
+    // 将查找到的排位数据转换为格式化的段位字符串
+    let rank_solo = generate_rank_string(rank_sole);
+    let rank_flex = generate_rank_string(rank_flex);
+    let rank_tft = generate_rank_string(rank_tft);
+
+    // 返回包含三个段位字符串的数组
+    Ok([rank_solo, rank_flex, rank_tft])
 }
 
 /// 获取召唤师信息

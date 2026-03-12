@@ -43,6 +43,23 @@
         </n-space>
       </div>
       <n-divider dashed class="mt-3.5! mb-0.5!" />
+      <!--段位 荣誉等级-->
+      <n-list>
+        <n-list-item>
+          <n-space justify="space-between">
+            <n-tag class="w-32! justify-center!" type="success" :bordered="false" round> 单双 {{ summonerData.rankList?.[0] }} </n-tag>
+            <n-tag class="w-32! justify-center!" type="success" :bordered="false" round> 灵活 {{ summonerData.rankList?.[1] }} </n-tag>
+          </n-space>
+        </n-list-item>
+        <n-list-item>
+          <n-space justify="space-between">
+            <n-tag class="w-32! justify-center!" type="success" :bordered="false" round> 云顶 {{ summonerData.rankList?.[2] }} </n-tag>
+            <n-tag class="w-32! justify-center!" type="success" :bordered="false" round>
+              {{ summonerData.rankList?.[2] }}
+            </n-tag>
+          </n-space>
+        </n-list-item>
+      </n-list>
     </n-card>
   </div>
   <div class="mainContent" v-else>
@@ -57,7 +74,7 @@ import type { SummonerData } from "@/lcu/types/SummonerTypes";
 import { invoke } from "@tauri-apps/api/core";
 import { getCurrentSummonerAllInfo } from "@/lcu/summoner.ts";
 import { listen } from "@tauri-apps/api/event";
-import { NAvatar, NButton, NCard, NDivider, NEllipsis, NProgress, NSpace, NTag } from "naive-ui";
+import { NAvatar, NButton, NCard, NDivider, NEllipsis, NList, NListItem, NProgress, NSpace, NTag } from "naive-ui";
 
 const summonerData = reactive<SummonerData>({
   summonerInfo: null,
@@ -73,6 +90,7 @@ const init = async (isFirst: boolean) => {
     return false;
   }
   summonerData.summonerInfo = summonerAllInfo.summonerInfo;
+  summonerData.rankList = summonerAllInfo.rankList;
   return true;
 };
 
