@@ -5,7 +5,7 @@ mod utils;
 
 use crate::lcu::client::RESTClient;
 use crate::lcu::types::rank::RankedStats;
-use crate::lcu::types::summoner::{LcuSummonerInfo, SummonerInfo};
+use crate::lcu::types::summoner::{LcuSummonerInfo, Profile, SummonerInfo};
 use crate::lcu::utils::global_key::init_global_keyboard;
 use crate::lcu::utils::process_info::get_auth_info;
 use crate::lcu::utils::tools::generate_rank_string;
@@ -29,6 +29,44 @@ static FAIL_RESULT: Lazy<[String; 3]> = Lazy::new(|| {
 // 获取 REST_CLIENT 的函数
 fn get_client() -> anyhow::Result<&'static RESTClient> {
     REST_CLIENT.get().context("REST_CLIENT 没有初始化")
+}
+
+/// 获取召唤师荣誉等级信息
+///
+/// 通过 LCU API 获取当前玩家的荣誉档案信息，包括荣誉等级和荣誉里程数。
+/// 该函数将原始 API 响应转换为格式化的荣誉信息字符串。
+///
+/// # Returns
+/// * `Ok(String)` - 成功时返回格式化的荣誉信息字符串，格式为："荣誉等级 X 里程 Y"
+///   - X: 当前的荣誉等级数值
+///   - Y: 当前的荣誉里程数
+/// * `Err(String)` - 失败时返回错误信息字符串
+///
+/// # Errors
+/// 当出现以下情况时返回错误：
+/// - REST_CLIENT 未初始化
+/// - HTTP 请求失败
+/// - JSON 反序列化失败
+#[tauri::command]
+pub async fn get_summoner_honor_level() -> Result<String, String> {
+    // 获取 REST 客户端实例并发起 API 请求获取荣誉档案
+    let client = get_client().map_err(|_| "Error".to_string())?;
+    let value = client
+        .get("/lol-honor-v2/v1/profile")
+        .await
+        .map_err(|_| "Error".to_string())?;
+
+    // 将响应数据反序列化为 Profile 结构体
+    let profile = serde_json::from_value::<Profile>(value).map_err(|e| {
+        error!("JSON 反序列化失败：{}", e);
+        "Error".to_string()
+    })?;
+
+    // 格式化并返回荣誉等级和里程信息
+    Ok(format!(
+        "荣誉等级{} 里程{}",
+        profile.honor_level, profile.checkpoint
+    ))
 }
 
 /// 获取排位赛积分信息

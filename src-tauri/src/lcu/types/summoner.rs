@@ -88,3 +88,12 @@ pub struct SummonerInfo {
 
     pub tag_line: Option<String>,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Profile {
+    pub checkpoint: i32,
+    #[serde(rename = "honorLevel")]
+    pub honor_level: i32,
+    #[serde(rename = "rewardsLocked")]
+    pub rewards_locked: bool,
+}

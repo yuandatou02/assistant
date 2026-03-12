@@ -53,10 +53,8 @@
         </n-list-item>
         <n-list-item>
           <n-space justify="space-between">
-            <n-tag class="w-32! justify-center!" type="success" :bordered="false" round> 云顶 {{ summonerData.rankList?.[2] }} </n-tag>
-            <n-tag class="w-32! justify-center!" type="success" :bordered="false" round>
-              {{ summonerData.rankList?.[2] }}
-            </n-tag>
+            <n-tag class="w-32! justify-center!" type="warning" :bordered="false" round> 云顶 {{ summonerData.rankList?.[2] }} </n-tag>
+            <n-tag class="w-32! justify-center!" type="warning" :bordered="false" round> {{ summonerData.rankList?.[3] }} </n-tag>
           </n-space>
         </n-list-item>
       </n-list>
