@@ -12,5 +12,5 @@ export interface SummonerInfo {
 export interface SummonerData {
   summonerInfo: SummonerInfo | null;
   rankList: string[] | null;
-  champLevel: any[][] | null;
+  champLevel: string[][] | null;
 }

@@ -1,4 +1,15 @@
 use crate::lcu::types::rank::RankedEntry;
+use crate::lcu::types::summoner::ChampInfo;
+use std::collections::HashMap;
+use std::fs;
+
+pub type ChampDict = HashMap<String, ChampInfo>;
+
+pub fn load_champ_dict(path: &str) -> Result<ChampDict, Box<dyn std::error::Error>> {
+    let content = fs::read_to_string(path)?;
+    let dict: ChampDict = serde_json::from_str(&content)?;
+    Ok(dict)
+}
 
 pub fn generate_rank_string(rank: Option<&RankedEntry>) -> String {
     match rank {

@@ -59,6 +59,9 @@
         </n-list-item>
       </n-list>
     </n-card>
+    <n-card size="small" content-style="padding-top:10px" class="shadow! h-100.5!">
+      <summoner-mastery-champ v-if="summonerData.champLevel" :max-h="378" :exist-champ-list="summonerData.champLevel" />
+    </n-card>
   </div>
   <div class="mainContent" v-else>
     <start-game />
@@ -73,6 +76,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { getCurrentSummonerAllInfo } from "@/lcu/summoner.ts";
 import { listen } from "@tauri-apps/api/event";
 import { NAvatar, NButton, NCard, NDivider, NEllipsis, NList, NListItem, NProgress, NSpace, NTag } from "naive-ui";
+import SummonerMasteryChamp from "@/main/components/summonerMasteryChamp.vue";
 
 const summonerData = reactive<SummonerData>({
   summonerInfo: null,
@@ -89,6 +93,7 @@ const init = async (isFirst: boolean) => {
   }
   summonerData.summonerInfo = summonerAllInfo.summonerInfo;
   summonerData.rankList = summonerAllInfo.rankList;
+  summonerData.champLevel = summonerAllInfo.champLevel;
   return true;
 };
 

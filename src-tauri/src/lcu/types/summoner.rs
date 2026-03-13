@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LcuSummonerInfo {
@@ -96,4 +97,46 @@ pub struct Profile {
     pub honor_level: i32,
     #[serde(rename = "rewardsLocked")]
     pub rewards_locked: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ChampInfo {
+    pub label: String,
+    pub alias: String,
+    pub title: String,
+    pub roles: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ChampionMastery {
+    pub champion_id: i64,
+    pub champion_level: i32,
+    pub champion_points: i64,
+    pub champion_points_since_last_level: i64,
+    pub champion_points_until_next_level: i64,
+    pub champion_season_milestone: i32,
+    pub highest_grade: String,
+    pub last_play_time: i64,
+    pub mark_required_for_next_level: i32,
+    pub milestone_grades: Vec<String>,
+    pub next_season_milestone: NextSeasonMilestone,
+    pub puuid: String,
+    pub tokens_earned: i32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NextSeasonMilestone {
+    pub bonus: bool,
+    pub require_grade_counts: HashMap<String, i32>,
+    pub reward_config: RewardConfig,
+    pub reward_marks: i32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RewardConfig {
+    pub maximum_reward: i32,
+    pub reward_value: String,
 }

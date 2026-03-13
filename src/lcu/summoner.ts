@@ -45,9 +45,22 @@ export const querySummonerHonorLevel = async (): Promise<string> => {
   return await invoke<string>("get_summoner_honor_level");
 };
 
+// 查询召唤师绝活英雄数据
+export const queryMasteryChampList = async (summonerPuuid?: string) => {
+  const endpoint = summonerPuuid
+    ? `/lol-champion-mastery/v1/${summonerPuuid}/champion-mastery`
+    : "/lol-champion-mastery/v1/local-player/champion-mastery";
+  return await invoke<string[][]>("get_mastery_champ_list", { endpoint });
+};
+
 // 返回首页最终需要的数据
 export const getCurrentSummonerAllInfo = async () => {
-  const [summonerInfo, rankList, honorData] = await Promise.all([querySummonerInfo(), queryRankPoint(), querySummonerHonorLevel()]);
+  const [summonerInfo, rankList, honorData, champLevel] = await Promise.all([
+    querySummonerInfo(),
+    queryRankPoint(),
+    querySummonerHonorLevel(),
+    queryMasteryChampList(),
+  ]);
   rankList.push(honorData);
-  return { summonerInfo, rankList };
+  return { summonerInfo, rankList, champLevel };
 };

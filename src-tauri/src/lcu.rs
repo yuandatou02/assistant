@@ -5,10 +5,10 @@ mod utils;
 
 use crate::lcu::client::RESTClient;
 use crate::lcu::types::rank::RankedStats;
-use crate::lcu::types::summoner::{LcuSummonerInfo, Profile, SummonerInfo};
+use crate::lcu::types::summoner::{ChampionMastery, LcuSummonerInfo, Profile, SummonerInfo};
 use crate::lcu::utils::global_key::init_global_keyboard;
 use crate::lcu::utils::process_info::get_auth_info;
-use crate::lcu::utils::tools::generate_rank_string;
+use crate::lcu::utils::tools::{generate_rank_string, load_champ_dict};
 use anyhow::Context;
 use log::error;
 use once_cell::sync::{Lazy, OnceCell};
@@ -29,6 +29,37 @@ static FAIL_RESULT: Lazy<[String; 3]> = Lazy::new(|| {
 // 获取 REST_CLIENT 的函数
 fn get_client() -> anyhow::Result<&'static RESTClient> {
     REST_CLIENT.get().context("REST_CLIENT 没有初始化")
+}
+
+#[tauri::command]
+pub async fn get_mastery_champ_list(endpoint: &str) -> Result<Vec<Vec<String>>, Value> {
+    let champ_dict = load_champ_dict("champ_dict.json").map_err(|_| Value::Null)?;
+    let client = get_client().map_err(|_| Value::Null)?;
+    let value = client.get(endpoint).await.map_err(|_| Value::Null)?;
+    let mastery_champ_list =
+        serde_json::from_value::<Vec<ChampionMastery>>(value).map_err(|e| {
+            error!("JSON 反序列化失败：{}", e);
+            Value::Null
+        })?;
+    Ok(mastery_champ_list
+        .iter()
+        .take(20)
+        .filter_map(|champ| {
+            let champ_id = champ.champion_id.to_string();
+            let champ_info = champ_dict.get(&champ_id).unwrap();
+            Some(vec![
+                format!(
+                    "https://game.gtimg.cn/images/lol/act/img/champion/{}.png",
+                    champ_info.alias
+                ),
+                format!("{}•{}", champ_info.label, champ_info.title),
+                format!(
+                    "英雄等级 {} / 熟练度 {}",
+                    champ.champion_level, champ.champion_points
+                ),
+            ])
+        })
+        .collect())
 }
 
 /// 获取召唤师荣誉等级信息

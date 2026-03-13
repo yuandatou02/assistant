@@ -1,8 +1,9 @@
 mod lcu;
 
 use lcu::{
-    get_client_path, get_lol_region, get_rank_point, get_summoner_honor_level, get_summoner_info,
-    init_keyboard, launch_lol, listen_for_client_start,
+    get_client_path, get_lol_region, get_mastery_champ_list, get_rank_point,
+    get_summoner_honor_level, get_summoner_info, init_keyboard, launch_lol,
+    listen_for_client_start,
 };
 
 #[tokio::main]
@@ -14,6 +15,17 @@ pub async fn run() {
                 app.handle().plugin(
                     tauri_plugin_log::Builder::default()
                         .level(log::LevelFilter::Info)
+                        .format(|out, message, record| {
+                            out.finish(format_args!(
+                                "[{}][{}][{}:{}][{}] {}",
+                                chrono::Local::now().format("%Y-%m-%d %H:%M:%S"),
+                                record.level(),
+                                record.file().unwrap_or("unknown"),
+                                record.line().unwrap_or(0),
+                                record.target(),
+                                message
+                            ))
+                        })
                         .build(),
                 )?;
             }
@@ -27,7 +39,8 @@ pub async fn run() {
             init_keyboard,
             get_summoner_info,
             get_rank_point,
-            get_summoner_honor_level
+            get_summoner_honor_level,
+            get_mastery_champ_list
         ])
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_http::init())
