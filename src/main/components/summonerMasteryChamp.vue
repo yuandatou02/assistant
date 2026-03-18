@@ -9,7 +9,7 @@ const stylySco = `max-height:${maxH}px;padding-right: 13px`;
   <n-scrollbar v-if="existChampList.length === 0" :style="stylySco">
     <n-space vertical :size="[0, 15]" style="margin-top: 3px">
       <div class="flex" v-for="index in 6">
-        <n-skeleton height="50px" width="50px" :sharp="false" style="margin-right: 8px" :key="index"/>
+        <n-skeleton height="50px" width="50px" :sharp="false" style="margin-right: 8px" :key="index" />
         <div class="grow flex flex-col justify-between">
           <n-skeleton height="22px" width="100%" :sharp="false" />
           <n-skeleton height="22px" width="100%" :sharp="false" />

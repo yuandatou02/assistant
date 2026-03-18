@@ -16,3 +16,20 @@ export const createMainWindows = async () => {
     await webview.show();
   });
 };
+
+export const createQueryMatchWindow = async () => {
+  const webview = new WebviewWindow("queryMatchWindow", {
+    title: "我的战绩",
+    url: "src/queryMatch/index.html",
+    width: 1174,
+    height: 668,
+    resizable: false,
+    decorations: false,
+    center: true,
+    visible: false,
+    transparent: true,
+  });
+  await webview.once("tauri://webview-created", async () => {
+    await webview.show();
+  });
+};

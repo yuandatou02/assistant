@@ -19,7 +19,7 @@
                 {{ summonerData.summonerInfo.name }}
               </n-ellipsis>
             </n-tag>
-            <n-button class="px-2!" :bordered="false" type="success" size="small" round @click.prevent=""> 我的战绩 </n-button>
+            <n-button class="px-2!" :bordered="false" type="success" size="small" round @click.prevent="openWindows"> 我的战绩 </n-button>
           </div>
           <div class="flex justify-between gap-x-3">
             <n-tag type="warning" size="small" round :bordered="false">
@@ -62,6 +62,8 @@
     <n-card size="small" content-style="padding-top:10px" class="shadow! h-100.5!">
       <summoner-mastery-champ v-if="summonerData.champLevel" :max-h="378" :exist-champ-list="summonerData.champLevel" />
     </n-card>
+    <!-- todo检测游戏内窗口模式 -->
+    <!--    todo<check-mode />-->
   </div>
   <div class="mainContent" v-else>
     <start-game />
@@ -77,6 +79,7 @@ import { getCurrentSummonerAllInfo } from "@/lcu/summoner.ts";
 import { listen } from "@tauri-apps/api/event";
 import { NAvatar, NButton, NCard, NDivider, NEllipsis, NList, NListItem, NProgress, NSpace, NTag } from "naive-ui";
 import SummonerMasteryChamp from "@/main/components/summonerMasteryChamp.vue";
+import { createQueryMatchWindow } from "@/background/utils/createWindows.ts";
 
 const summonerData = reactive<SummonerData>({
   summonerInfo: null,
@@ -125,6 +128,10 @@ const onClientLaunch = async () => {
       }
     }, 1000);
   });
+};
+
+const openWindows = async () => {
+  await createQueryMatchWindow();
 };
 </script>
 
